@@ -323,9 +323,76 @@
     }
 
     .introPhoto {
-      min-height: 360px;
-      background: url("assets/hero-banquet.png") center / cover no-repeat;
+      min-height: 420px;
+      background: url("assets/nha-hang.jpg") center 30% / cover no-repeat;
     }
+    .priceBadge {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 18px 0 14px;
+      padding: 16px 22px;
+      background: linear-gradient(135deg, #fff8e7, #fff3d0);
+      border-left: 5px solid var(--gold-2);
+      border-radius: 0 10px 10px 0;
+      box-shadow: 0 4px 16px rgba(184,138,52,0.18);
+    }
+    .priceBadge strong {
+      color: #b34000;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 950;
+      line-height: 1.1;
+    }
+    .priceBadge span {
+      color: var(--blue-3);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .priceBadge em {
+      color: #2d7a4f;
+      font-style: normal;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .introCTA {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .btnCall {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 24px;
+      background: linear-gradient(145deg, #1e8f47, #0f5a2c);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      border-radius: 10px;
+      box-shadow: 0 6px 0 #063d1a, 0 10px 22px rgba(15,90,44,0.4);
+      transition: transform 0.12s, box-shadow 0.12s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btnCall:hover { transform: translateY(3px); box-shadow: 0 3px 0 #063d1a, 0 6px 14px rgba(15,90,44,0.35); }
+    .btnZalo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 24px;
+      background: #fff;
+      color: #0068ff;
+      font-size: 15px;
+      font-weight: 900;
+      border-radius: 10px;
+      border: 2px solid #0068ff;
+      box-shadow: 0 4px 14px rgba(0,104,255,0.18);
+      transition: all 0.12s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btnZalo:hover { background: #0068ff; color: #fff; }
     .split {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, 0.92fr);
@@ -784,7 +851,15 @@
           <article id="thuc-don" class="splitCopy">
             <h3>Thực đơn phong phú</h3>
             <p>Thiện Nga Wedding tư vấn món ăn theo ngân sách, khẩu vị gia đình và tính chất buổi tiệc. Mỗi mâm tiệc được chuẩn bị để vừa đẹp mắt, vừa thuận tiện phục vụ tại nhà.</p>
-            <a class="btn" href="#album">Khám phá gợi ý thực đơn</a>
+            <div class="priceBadge">
+              <strong>Chỉ từ 2.200.000đ / bàn 10 người</strong>
+              <em>🎁 Tặng kèm món Khai Vị miễn phí trong lúc ngồi đợi</em>
+              <span>Liên hệ để nhận báo giá chính xác theo số mâm và thực đơn</span>
+            </div>
+            <div class="introCTA">
+              <a class="btnCall" href="tel:0965626128">☎ Gọi ngay 0965 626 128</a>
+              <a class="btnZalo" href="https://zalo.me/0965626128" target="_blank" rel="noopener">&#128172; Nhắn Zalo</a>
+            </div>
           </article>
           <article class="reasonPanel">
             <h3>4 lý do bạn nên chọn Thiện Nga cho mọi bữa tiệc</h3>
