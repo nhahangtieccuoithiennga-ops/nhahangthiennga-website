@@ -1,0 +1,29 @@
+# Bỏ qua file cấu hình chứa thông tin bí mật
+../deploy/config.ini
+deploy/config.ini
+
+# Bỏ qua file môi trường
+.env
+.env.local
+.env.*.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories and files
+.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
