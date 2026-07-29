@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f5a2c">
+  <title>Góc Bếp – Thiện Nga Wedding &amp; Catering</title>
+  <meta name="description" content="Góc Bếp Thiện Nga Wedding – nơi chia sẻ câu chuyện nghề, hình ảnh và dấu ấn những buổi tiệc do đội ngũ Thiện Nga thực hiện tại Khánh Hoà.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:   #0f5a2c;
+      --blue-2: #174b35;
+      --blue-3: #0b3f26;
+      --gold:   #f1cf73;
+      --gold-2: #b88a34;
+      --green:  #5d8f47;
+      --mint:   #edf6ee;
+      --ink:    #173322;
+      --muted:  #657668;
+      --line:   #d9e4eb;
+      --shadow: 0 8px 28px rgba(15,90,44,.10);
+      --r: 14px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{color:var(--ink);background:#f3f1ea;font-family:'Inter','Segoe UI',Arial,sans-serif;line-height:1.65;min-height:100vh}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ── TOP BAR ── */
+    .topBar{display:flex;align-items:center;justify-content:center;gap:16px;min-height:36px;padding:6px 16px;background:var(--blue);color:#f7fbff;font-size:12px;font-weight:700;text-transform:uppercase;overflow-x:auto;scrollbar-width:none}
+    .topBar::-webkit-scrollbar{display:none}
+    .topBar span,.topBar a:not(.tSoc a){display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+    .tSoc{display:inline-flex;align-items:center;gap:5px}
+    .tSoc a{display:grid;place-items:center;width:24px;height:24px;border-radius:4px;background:rgba(255,255,255,.15);font-size:10px;font-weight:900}
+
+    /* ── MASTHEAD ── */
+    .masthead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;padding:14px clamp(16px,5vw,72px);background:#fff}
+    .backLink{display:inline-flex;align-items:center;gap:7px;color:var(--blue-3);font-size:13.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;transition:color .15s}
+    .backLink:hover{color:var(--green)}
+    .backLink svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.5}
+    .brand{display:grid;justify-items:center;color:var(--blue-3);text-align:center}
+    .brandMark{display:grid;place-items:center;width:48px;height:48px;border:2px solid var(--blue);border-radius:50%;color:var(--blue);background:#fff;font-family:Georgia,serif;font-size:20px;font-weight:900;line-height:1;box-shadow:0 5px 14px rgba(15,90,44,.12)}
+    .brand b{display:block;margin-top:4px;font-family:'Playfair Display',Georgia,serif;font-size:16px;line-height:1.05}
+    .brand small{display:block;color:var(--green);font-size:10px;font-weight:800;text-transform:uppercase}
+    .ctaBtn{justify-self:end;display:inline-flex;align-items:center;gap:7px;padding:10px 20px;background:linear-gradient(145deg,#1e8f47,#0f5a2c);color:#fff;font-size:13.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;border-radius:8px;box-shadow:0 4px 0 #063d1a,0 7px 18px rgba(15,90,44,.38);transition:transform .12s,box-shadow .12s}
+    .ctaBtn:hover{transform:translateY(3px);box-shadow:0 1px 0 #063d1a,0 4px 10px rgba(15,90,44,.3)}
+
+    /* ── NAV ── */
+    .navBar{position:sticky;top:0;z-index:40;display:flex;justify-content:center;gap:clamp(12px,4vw,44px);min-height:44px;padding:0 16px;background:var(--blue);color:#fff;box-shadow:0 5px 18px rgba(12,65,34,.16);overflow-x:auto;scrollbar-width:none}
+    .navBar::-webkit-scrollbar{display:none}
+    .navBar a{display:inline-flex;align-items:center;min-height:44px;border-bottom:3px solid transparent;font-size:14px;font-weight:800;white-space:nowrap;transition:color .15s,border-color .15s}
+    .navBar a:hover,.navBar a.act{border-bottom-color:var(--gold);color:var(--gold)}
+
+    /* ── HERO ── */
+    .hero{position:relative;isolation:isolate;display:grid;place-items:center;min-height:clamp(260px,32vw,360px);padding:32px 16px;color:#fff;text-align:center;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;z-index:-2;background:url("assets/dau-an-decor-gia-tien.jpg") center 32% / cover no-repeat;transform:scale(1.04)}
+    .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(5,30,16,.84),rgba(5,30,16,.56) 48%,rgba(5,30,16,.88))}
+    .heroInner{display:grid;justify-items:center;gap:10px}
+    .heroBadge{display:inline-flex;align-items:center;gap:8px;padding:5px 15px;background:rgba(241,207,115,.18);border:1px solid rgba(241,207,115,.42);border-radius:99px;color:var(--gold);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+    .hero h1{color:var(--gold);font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,4.5vw,50px);line-height:1.1;text-transform:uppercase;text-shadow:0 8px 26px rgba(0,0,0,.5)}
+    .hero p{max-width:620px;color:rgba(255,255,255,.88);font-size:clamp(14px,1.8vw,18px);font-weight:600}
+
+    /* ── MAIN BODY ── */
+    .blogBody{padding:40px clamp(14px,5vw,72px) 70px}
+    .blogInner{width:min(1180px,100%);margin:0 auto}
+
+    /* ── STAT BAR ── */
+    .statBar{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-bottom:32px}
+    .statChip{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;background:#fff;border-left:4px solid var(--gold-2);border-radius:0 10px 10px 0;box-shadow:var(--shadow);font-weight:800;color:var(--blue-3);font-size:13.5px}
+    .statChip em{color:var(--green);font-style:normal;font-size:19px;font-weight:900}
+
+    /* ── TOOLBAR ── */
+    .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:30px}
+    .searchBox{flex:1 1 220px;position:relative}
+    .searchBox input{width:100%;padding:11px 14px 11px 40px;border:2px solid var(--line);border-radius:10px;background:#fff;font-size:14px;font-family:inherit;color:var(--ink);outline:none;transition:border-color .18s}
+    .searchBox input:focus{border-color:var(--green)}
+    .searchBox svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;fill:none;stroke:var(--muted);stroke-width:2}
+
+    /* ── SETUP PANEL (Google Sheet chưa được kết nối) ── */
+    .setupWrap{display:grid;place-items:center;min-height:420px;padding:20px}
+    .setupCard{width:min(720px,100%);background:#fff;border-radius:var(--r);box-shadow:0 12px 40px rgba(15,90,44,.12);overflow:hidden}
+    .setupHead{padding:20px 24px;background:linear-gradient(135deg,#0f5a2c,#174b35);color:#fff}
+    .setupHead h2{font-family:'Playfair Display',Georgia,serif;font-size:20px;margin-bottom:5px;color:var(--gold)}
+    .setupHead p{font-size:13.5px;color:rgba(255,255,255,.8)}
+    .setupBody{padding:24px}
+    .step{display:flex;gap:14px;margin-bottom:20px}
+    .stepNum{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:14px;font-weight:900;display:grid;place-items:center}
+    .stepContent{flex:1}
+    .stepContent strong{display:block;color:var(--blue-3);font-size:14.5px;font-weight:800;margin-bottom:4px}
+    .stepContent p{color:var(--muted);font-size:13.5px;line-height:1.55}
+    .miniTable{width:100%;border-collapse:collapse;margin:8px 0;font-size:12.5px}
+    .miniTable th,.miniTable td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+    .miniTable th{background:var(--mint);color:var(--blue-3);font-weight:800}
+    .urlInputRow{display:flex;gap:8px;margin-top:8px}
+    .urlInput{flex:1;padding:10px 14px;border:2px solid var(--line);border-radius:8px;font-size:13.5px;font-family:inherit;outline:none;transition:border-color .15s}
+    .urlInput:focus{border-color:var(--green)}
+    .activateBtn{padding:10px 18px;background:linear-gradient(145deg,#1e8f47,#0f5a2c);color:#fff;border:none;border-radius:8px;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+    .activateBtn:hover{filter:brightness(1.08)}
+
+    /* ── LOADING ── */
+    .loadingWrap{display:grid;place-items:center;gap:14px;padding:80px 20px;text-align:center}
+    .spinner{width:48px;height:48px;border:5px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .85s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loadingWrap p{color:var(--muted);font-weight:600;font-size:15px}
+
+    /* ── BLOG GRID ── */
+    .blogGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+    .blogCard{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 3px 14px rgba(15,90,44,.08);border:1.5px solid transparent;transition:box-shadow .18s,border-color .18s,transform .18s;cursor:pointer;display:flex;flex-direction:column}
+    .blogCard:hover{box-shadow:0 10px 28px rgba(15,90,44,.15);border-color:rgba(15,90,44,.12);transform:translateY(-3px)}
+    .blogCover{position:relative;height:190px;background:#ddd url("assets/hero-nha-hang.jpg") center/cover no-repeat;flex-shrink:0}
+    .blogDate{position:absolute;top:12px;left:12px;display:grid;justify-items:center;padding:6px 10px;background:rgba(8,45,24,.82);border-radius:8px;color:var(--gold);font-size:12px;font-weight:900;line-height:1.2}
+    .blogText{padding:18px 20px 20px;flex:1;display:flex;flex-direction:column}
+    .blogTitle{color:var(--blue-3);font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;line-height:1.3;margin-bottom:8px}
+    .blogExcerpt{color:var(--muted);font-size:13.5px;line-height:1.6;flex:1}
+    .blogMore{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:var(--green);font-size:13px;font-weight:800}
+
+    /* ── NO RESULTS / ERROR ── */
+    .noResults{padding:60px 20px;text-align:center;color:var(--muted)}
+    .noResults p:first-child{font-size:17px;font-weight:700;color:var(--blue-3);margin-bottom:6px}
+
+    /* ── DETAIL VIEW ── */
+    .detailWrap{display:none}
+    .detailWrap.open{display:block}
+    .backToList{display:inline-flex;align-items:center;gap:7px;margin-bottom:22px;color:var(--blue-3);font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+    .backToList:hover{color:var(--green)}
+    .detailCover{width:100%;height:clamp(220px,38vw,420px);border-radius:var(--r);overflow:hidden;margin-bottom:24px;background:#ddd url("assets/hero-nha-hang.jpg") center/cover no-repeat}
+    .detailDate{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:5px 14px;background:var(--mint);border-radius:99px;color:var(--blue-3);font-size:12.5px;font-weight:800}
+    .detailTitle{color:var(--blue-3);font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3.5vw,36px);line-height:1.2;margin-bottom:18px}
+    .detailContent{max-width:780px;color:var(--ink);font-size:16px;line-height:1.85}
+    .detailContent p{margin-bottom:16px}
+    .detailGallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:24px;max-width:780px}
+    .detailGallery img{border-radius:10px;height:150px;width:100%;object-fit:cover}
+
+    /* ── CTA BANNER ── */
+    .ctaBanner{position:relative;isolation:isolate;margin-top:52px;border-radius:var(--r);overflow:hidden;padding:clamp(28px,6vw,56px) clamp(22px,6vw,58px);color:#fff;text-align:center;background:url("assets/promo-san-vuon.jpg") center / cover no-repeat}
+    .ctaBanner::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(135deg,rgba(8,40,22,.88) 0%,rgba(8,40,22,.7) 50%,rgba(8,40,22,.82) 100%)}
+    .ctaBanner h3{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,3.5vw,36px);color:var(--gold);margin-bottom:9px}
+    .ctaBanner p{max-width:580px;margin:0 auto 22px;color:rgba(255,255,255,.88);font-size:clamp(14px,1.8vw,17px)}
+    .ctaGroup{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+    .btnGold{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;background:linear-gradient(135deg,#f1cf73,#b88a34);color:var(--blue-3);font-size:14.5px;font-weight:900;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;box-shadow:0 5px 0 #7a5a1f,0 9px 20px rgba(184,138,52,.38);transition:transform .12s,box-shadow .12s}
+    .btnGold:hover{transform:translateY(3px);box-shadow:0 2px 0 #7a5a1f,0 4px 12px rgba(184,138,52,.3)}
+    .btnOutline{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;background:transparent;border:2px solid rgba(255,255,255,.7);color:#fff;font-size:14.5px;font-weight:800;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;transition:all .15s}
+    .btnOutline:hover{background:rgba(255,255,255,.12);border-color:#fff}
+
+    /* ── FOOTER ── */
+    .footer{padding:18px 16px;background:#072b18;color:rgba(255,255,255,.66);font-size:13px;text-align:center}
+    .footer a{color:var(--gold);font-weight:700}
+
+    /* ── FLOAT CONTACT ── */
+    .floatContact{position:fixed;right:20px;top:46%;z-index:55;display:grid;gap:10px;transform:translateY(-50%)}
+    .floatContact a{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;background:#168044;color:#fff;font-size:11px;font-weight:950;box-shadow:0 12px 28px rgba(8,60,32,.26);transition:transform .15s}
+    .floatContact a:hover{transform:scale(1.08)}
+    .floatContact a:nth-child(2){background:#2f9d55}
+    .floatContact a:nth-child(3){background:var(--blue-3);font-size:22px}
+
+    @media(max-width:900px){.masthead{grid-template-columns:1fr 1fr}.brand{display:none}}
+    @media(max-width:640px){
+      .topBar{justify-content:flex-start}
+      .masthead{grid-template-columns:1fr 1fr;padding:12px 14px}
+      .blogGrid{grid-template-columns:1fr}
+      .floatContact{left:10px;right:10px;top:auto;bottom:10px;grid-template-columns:repeat(3,1fr);transform:none}
+      .floatContact a{width:auto;height:46px;border-radius:6px}
+      .footer{padding-bottom:66px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topBar">
+    <div class="tSoc">
+      <a href="https://www.facebook.com/truong.yen.197776" aria-label="Messenger" target="_blank" rel="noopener">f</a>
+      <a href="https://zalo.me/0965626128" aria-label="Zalo" target="_blank" rel="noopener">Z</a>
+    </div>
+    <span>Hotline</span>
+    <span>08:00 – 20:00</span>
+    <a href="tel:0965626128">0965 626 128</a>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <a class="backLink" href="index.html">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Trang chủ
+    </a>
+    <a class="brand" href="index.html" aria-label="Thiện Nga Wedding">
+      <span class="brandMark">TN</span>
+      <b>Thiện Nga</b>
+      <small>Wedding &amp; Catering</small>
+    </a>
+    <a class="ctaBtn" href="tel:0965626128">☎ 0965 626 128</a>
+  </header>
+
+  <!-- NAV -->
+  <nav class="navBar" aria-label="Điều hướng Góc Bếp">
+    <a href="index.html">Trang chủ</a>
+    <a href="thuc-don.html">Thực đơn</a>
+    <a href="thuc-don-cuoi.html">Thực Đơn Cưới</a>
+    <a href="album-mon-an.html">Album Món Ăn</a>
+    <a href="goc-bep.html" class="act">Góc Bếp</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="heroInner">
+      <span class="heroBadge">📖 Thiện Nga Wedding &amp; Catering</span>
+      <h1>Góc Bếp</h1>
+      <p>Câu chuyện nghề, hình ảnh hậu trường và dấu ấn những buổi tiệc do đội ngũ Thiện Nga thực hiện.</p>
+    </div>
+  </section>
+
+  <!-- BLOG BODY -->
+  <main class="blogBody">
+    <div class="blogInner">
+
+      <!-- LIST VIEW -->
+      <div id="listView">
+
+        <!-- STAT BAR -->
+        <div class="statBar" id="statBar" style="display:none">
+          <div class="statChip"><em id="totalCount">0</em>&nbsp;bài viết</div>
+          <div class="statChip">🔄 Cập nhật trực tiếp từ Google Sheet</div>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="toolbar" id="toolbar" style="display:none">
+          <div class="searchBox">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="searchInput" placeholder="Tìm bài viết…" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- SETUP PANEL (hiện khi chưa nối Google Sheet) -->
+        <div class="setupWrap" id="setupWrap" style="display:none">
+          <div class="setupCard">
+            <div class="setupHead">
+              <h2>⚙️ Kết nối Google Sheet cho Góc Bếp</h2>
+              <p>Chỉ cần làm 1 lần • Miễn phí • Sau đó thêm/xoá/sửa bài viết ngay trong Google Sheet</p>
+            </div>
+            <div class="setupBody">
+
+              <div class="step">
+                <span class="stepNum">1</span>
+                <div class="stepContent">
+                  <strong>Tạo 1 Google Sheet mới</strong>
+                  <p>Vào <a href="https://sheets.google.com" target="_blank" style="color:var(--blue);font-weight:700">sheets.google.com</a> → tạo bảng tính trống → đặt tên hàng đầu tiên (dòng tiêu đề) đúng theo thứ tự cột sau:</p>
+                  <table class="miniTable">
+                    <tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th></tr>
+                    <tr><td>(để trống)</td><td>STT</td><td>Ngày</td><td>Tiêu đề</td><td>Mô tả ngắn</td><td>Nội dung</td><td>Ảnh đại diện</td><td>Ảnh khác</td></tr>
+                  </table>
+                  <p>Mỗi dòng tiếp theo là 1 bài viết. Cột <b>Ảnh đại diện</b>/<b>Ảnh khác</b> điền tên file ảnh (ví dụ: <code>cau-chuyen-tet.jpg</code>) sau khi đã gửi ảnh để thêm vào thư mục <code>assets/goc-bep/</code>, hoặc dán thẳng link ảnh (bắt đầu bằng http). Nhiều ảnh khác cách nhau bằng dấu phẩy.</p>
+                </div>
+              </div>
+
+              <div class="step">
+                <span class="stepNum">2</span>
+                <div class="stepContent">
+                  <strong>Xuất bản lên web dạng CSV</strong>
+                  <p>Vào <b>File → Chia sẻ → Xuất bản lên web</b> (Publish to web) → chọn đúng sheet vừa tạo → định dạng <b>CSV</b> → bấm <b>Xuất bản</b> → sao chép đường dẫn.</p>
+                </div>
+              </div>
+
+              <div class="step">
+                <span class="stepNum">3</span>
+                <div class="stepContent">
+                  <strong>Dán link CSV vào đây để kích hoạt ngay</strong>
+                  <div class="urlInputRow">
+                    <input class="urlInput" id="sheetUrlInput" type="url" placeholder="https://docs.google.com/spreadsheets/d/…/pub?output=csv">
+                    <button class="activateBtn" onclick="activate()">Kích hoạt ▶</button>
+                  </div>
+                  <p style="margin-top:6px;font-size:12px;color:var(--muted)">Link được lưu trên trình duyệt này. Để cố định cho mọi người xem, gửi link đó lại và nhờ cập nhật biến <b>SHEET_CSV</b> trong file <b>goc-bep.html</b>.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loadingWrap" id="loadingWrap" style="display:none">
+          <div class="spinner"></div>
+          <p>Đang tải bài viết…</p>
+        </div>
+
+        <!-- BLOG GRID (rendered by JS) -->
+        <div class="blogGrid" id="blogGrid" style="display:none"></div>
+
+        <!-- NO RESULTS -->
+        <div class="noResults" id="noResults" style="display:none">
+          <p>Không tìm thấy bài viết phù hợp</p>
+          <p>Thử tìm từ khoá khác.</p>
+        </div>
+
+      </div>
+
+      <!-- DETAIL VIEW -->
+      <div class="detailWrap" id="detailWrap">
+        <a class="backToList" href="goc-bep.html" id="backToList">← Quay lại Góc Bếp</a>
+        <div class="detailCover" id="detailCover"></div>
+        <span class="detailDate" id="detailDate"></span>
+        <h1 class="detailTitle" id="detailTitle"></h1>
+        <div class="detailContent" id="detailContent"></div>
+        <div class="detailGallery" id="detailGallery"></div>
+      </div>
+
+      <!-- CTA BANNER -->
+      <div class="ctaBanner" id="ctaBanner" style="display:none">
+        <h3>Muốn tiệc của bạn cũng trở thành một câu chuyện đẹp?</h3>
+        <p>Liên hệ Thiện Nga Wedding để được tư vấn thực đơn, không gian và dịch vụ trọn gói cho buổi tiệc sắp tới.</p>
+        <div class="ctaGroup">
+          <a class="btnGold" href="tel:0965626128">☎ Gọi tư vấn miễn phí</a>
+          <a class="btnOutline" href="https://zalo.me/0965626128" target="_blank" rel="noopener">💬 Nhắn Zalo ngay</a>
+          <a class="btnOutline" href="index.html#dau-an">🌸 Xem Dấu Ấn Tiệc</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <a href="index.html">← Quay về Trang chủ Thiện Nga Wedding</a> &nbsp;|&nbsp; Copyright 2026 © Thiện Nga Wedding &amp; Catering
+  </footer>
+
+  <!-- FLOAT CONTACT -->
+  <div class="floatContact" aria-label="Liên hệ nhanh">
+    <a href="https://zalo.me/0965626128" aria-label="Nhắn Zalo" target="_blank" rel="noopener">Zalo</a>
+    <a href="https://www.facebook.com/truong.yen.197776" aria-label="Nhắn Messenger" target="_blank" rel="noopener">Mess</a>
+    <a href="tel:0965626128" aria-label="Gọi điện">☎</a>
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════════
+       CẤU HÌNH – dán link CSV Google Sheet vào đây
+       sau khi Xuất bản lên web (Publish to web)
+    ══════════════════════════════════════════════ */
+    const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/161w7eVzghohubVGXRWP7Q7TC_DG7IDl_F7DU4LfrEDI/export?format=csv&gid=0';
+
+    let ALL_POSTS = [];
+
+    /* ── PARSE CSV (hỗ trợ ô có dấu phẩy / xuống dòng trong dấu ngoặc kép) ── */
+    function parseCSV(text) {
+      const rows = [];
+      let i = 0;
+      while (i < text.length) {
+        const row = [];
+        while (i < text.length && text[i] !== '\n') {
+          if (text[i] === '"') {
+            let cell = ''; i++;
+            while (i < text.length) {
+              if (text[i] === '"' && text[i+1] === '"') { cell += '"'; i += 2; }
+              else if (text[i] === '"') { i++; break; }
+              else { cell += text[i++]; }
+            }
+            row.push(cell);
+          } else {
+            let cell = '';
+            while (i < text.length && text[i] !== ',' && text[i] !== '\n') cell += text[i++];
+            row.push(cell.trim());
+          }
+          if (i < text.length && text[i] === ',') i++;
+        }
+        if (i < text.length && text[i] === '\n') i++;
+        if (row.some(c => c !== '')) rows.push(row);
+      }
+      return rows;
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function slugify(s, idx) {
+      const base = String(s || '').normalize('NFD').replace(/[̀-ͯ]/g,'')
+        .replace(/đ/g,'d').replace(/Đ/g,'D')
+        .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+      return base || ('bai-viet-' + idx);
+    }
+
+    function resolveImg(val) {
+      val = (val || '').trim();
+      if (!val) return '';
+      if (/^https?:\/\//i.test(val)) return val;
+      return 'assets/goc-bep/' + val;
+    }
+
+    /* ── DỰNG DANH SÁCH BÀI VIẾT TỪ CSV ── */
+    function buildPosts(csvText) {
+      const rows = parseCSV(csvText);
+      const posts = [];
+      rows.forEach((row, idx) => {
+        // Cột: [trống, STT, Ngày, Tiêu đề, Mô tả ngắn, Nội dung, Ảnh đại diện, Ảnh khác]
+        const stt   = row[1];
+        const date  = (row[2] || '').trim();
+        const title = (row[3] || '').trim();
+        const excerpt = (row[4] || '').trim();
+        const content = (row[5] || '').trim();
+        const cover   = resolveImg(row[6]);
+        const gallery = (row[7] || '').split(',').map(s => resolveImg(s)).filter(Boolean);
+
+        if (!title || isNaN(parseInt(stt))) return; // bỏ qua dòng tiêu đề cột / dòng trống
+
+        posts.push({
+          slug: slugify(title, idx),
+          date, title, excerpt, content, cover, gallery
+        });
+      });
+      return posts;
+    }
+
+    /* ── RENDER DANH SÁCH ── */
+    function renderList(posts) {
+      const grid = document.getElementById('blogGrid');
+      grid.innerHTML = '';
+
+      posts.forEach(post => {
+        const card = document.createElement('article');
+        card.className = 'blogCard';
+        card.dataset.search = slugify(post.title + ' ' + post.excerpt, 0);
+        card.innerHTML =
+          '<div class="blogCover"' + (post.cover ? ' style="background-image:url(\'' + post.cover + '\')"' : '') + '>' +
+            (post.date ? '<span class="blogDate">' + esc(post.date) + '</span>' : '') +
+          '</div>' +
+          '<div class="blogText">' +
+            '<h3 class="blogTitle">' + esc(post.title) + '</h3>' +
+            '<p class="blogExcerpt">' + esc(post.excerpt) + '</p>' +
+            '<span class="blogMore">Đọc tiếp →</span>' +
+          '</div>';
+        card.addEventListener('click', () => { location.hash = 'post=' + post.slug; });
+        grid.appendChild(card);
+      });
+
+      document.getElementById('totalCount').textContent = posts.length;
+      document.getElementById('statBar').style.display = '';
+      document.getElementById('toolbar').style.display = '';
+      document.getElementById('ctaBanner').style.display = '';
+      document.getElementById('loadingWrap').style.display = 'none';
+      grid.style.display = posts.length ? '' : 'none';
+      document.getElementById('noResults').style.display = posts.length ? 'none' : '';
+
+      setupSearch(posts);
+    }
+
+    function setupSearch(posts) {
+      const input = document.getElementById('searchInput');
+      input.addEventListener('input', () => {
+        const q = slugify(input.value, 0);
+        let found = 0;
+        document.querySelectorAll('.blogCard').forEach(card => {
+          const match = !q || card.dataset.search.includes(q);
+          card.style.display = match ? '' : 'none';
+          if (match) found++;
+        });
+        document.getElementById('noResults').style.display = found ? 'none' : '';
+      });
+    }
+
+    /* ── RENDER CHI TIẾT ── */
+    function renderDetail(post) {
+      document.getElementById('listView').style.display = 'none';
+      document.getElementById('ctaBanner').style.display = '';
+      const wrap = document.getElementById('detailWrap');
+      wrap.classList.add('open');
+
+      document.getElementById('detailCover').style.backgroundImage = post.cover ? `url('${post.cover}')` : '';
+      document.getElementById('detailDate').textContent = post.date || '';
+      document.getElementById('detailDate').style.display = post.date ? '' : 'none';
+      document.getElementById('detailTitle').textContent = post.title;
+
+      const contentEl = document.getElementById('detailContent');
+      contentEl.innerHTML = post.content
+        .split(/\n+/)
+        .filter(p => p.trim())
+        .map(p => '<p>' + esc(p) + '</p>')
+        .join('') || '<p>' + esc(post.excerpt) + '</p>';
+
+      const galleryEl = document.getElementById('detailGallery');
+      galleryEl.innerHTML = post.gallery.map(src => '<img src="' + src + '" alt="' + esc(post.title) + '" loading="lazy">').join('');
+
+      document.title = post.title + ' – Góc Bếp Thiện Nga Wedding';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showList() {
+      document.getElementById('listView').style.display = '';
+      document.getElementById('detailWrap').classList.remove('open');
+      document.title = 'Góc Bếp – Thiện Nga Wedding & Catering';
+    }
+
+    function route() {
+      const m = location.hash.match(/post=([^&]+)/);
+      if (m) {
+        const post = ALL_POSTS.find(p => p.slug === decodeURIComponent(m[1]));
+        if (post) { renderDetail(post); return; }
+      }
+      showList();
+    }
+
+    document.getElementById('backToList').addEventListener('click', (e) => {
+      if (ALL_POSTS.length) { e.preventDefault(); history.pushState('', document.title, location.pathname); showList(); }
+    });
+    window.addEventListener('hashchange', route);
+
+    /* ── TẢI DỮ LIỆU TỪ GOOGLE SHEET ── */
+    async function loadPosts(url) {
+      document.getElementById('setupWrap').style.display = 'none';
+      document.getElementById('loadingWrap').style.display = '';
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const text = await resp.text();
+        ALL_POSTS = buildPosts(text);
+        renderList(ALL_POSTS);
+        route();
+      } catch (err) {
+        console.error('Lỗi tải Góc Bếp:', err);
+        document.getElementById('loadingWrap').style.display = 'none';
+        document.getElementById('setupWrap').style.display = '';
+      }
+    }
+
+    function activate() {
+      const url = document.getElementById('sheetUrlInput').value.trim();
+      if (!url || !url.includes('docs.google.com')) {
+        alert('Link không hợp lệ. Vui lòng dán đúng link CSV từ Google Sheet (Xuất bản lên web).');
+        return;
+      }
+      localStorage.setItem('tn_gocbep_url', url);
+      loadPosts(url);
+    }
+
+    (function init() {
+      const url = SHEET_CSV || localStorage.getItem('tn_gocbep_url') || '';
+      if (!url) {
+        document.getElementById('setupWrap').style.display = '';
+      } else {
+        loadPosts(url);
+      }
+    })();
+  </script>
+</body>
+</html>
