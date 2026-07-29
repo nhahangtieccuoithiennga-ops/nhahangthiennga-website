@@ -393,6 +393,23 @@
       letter-spacing: 0.5px;
     }
     .btnZalo:hover { background: #0068ff; color: #fff; }
+    .btnMenu {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 24px;
+      background: linear-gradient(135deg, #f1cf73, #b88a34);
+      color: var(--blue-3);
+      font-size: 15px;
+      font-weight: 900;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 14px rgba(184,138,52,0.28);
+      transition: all 0.12s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btnMenu:hover { filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(184,138,52,0.38); }
     .split {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, 0.92fr);
@@ -820,7 +837,7 @@
 
   <nav class="navBar" aria-label="Điều hướng chính">
     <a href="#gioi-thieu">Giới thiệu</a>
-    <a href="#thuc-don">Thực đơn</a>
+    <a href="thuc-don.html">Thực đơn</a>
     <a href="#dich-vu">Tiệc & dấu ấn</a>
     <a href="#album">Album món ăn</a>
     <a href="#goc-bep">Góc bếp</a>
@@ -859,6 +876,7 @@
             <div class="introCTA">
               <a class="btnCall" href="tel:0965626128">☎ Gọi ngay 0965 626 128</a>
               <a class="btnZalo" href="https://zalo.me/0965626128" target="_blank" rel="noopener">&#128172; Nhắn Zalo</a>
+              <a class="btnMenu" href="thuc-don.html" id="btn-xem-thuc-don">&#128203; Xem Thực Đơn</a>
             </div>
           </article>
           <article class="reasonPanel">
