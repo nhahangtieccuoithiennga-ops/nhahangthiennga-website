@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1f12">
+  <title>Quán Nhậu Thiện Nga — Thực Đơn Lai Rai Đại Lãnh & Tu Bông, Khánh Hoà</title>
+  <meta name="description" content="Quán Nhậu Thiện Nga — chốn hẹn của tình anh em tại Đại Lãnh & Tu Bông, Khánh Hoà. 100 món hải sản, bò, gà, lẩu, gỏi. Đặt bàn: 0965 626 128.">
+  <meta property="og:title" content="Quán Nhậu Thiện Nga — Đại Lãnh & Tu Bông">
+  <meta property="og:description" content="Ghé một lần, nhớ cả đời… rượu! Thực đơn 100 món: hải sản, gà, lẩu, combo mẹt gia đình. Đặt bàn: 0965 626 128.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/hero-nha-hang.jpg">
+  <style>
+    :root {
+      --dark:   #0b1f12;
+      --dark2:  #102419;
+      --dark3:  #0d2e18;
+      --green:  #0f5a2c;
+      --green2: #1e8f47;
+      --gold:   #f2a541;
+      --gold2:  #f2c14e;
+      --cream:  #faf3e6;
+      --muted:  rgba(250,243,230,.7);
+      --line:   rgba(242,193,78,.2);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{
+      background:var(--dark);
+      color:var(--cream);
+      font-family:"Segoe UI",Arial,Helvetica,sans-serif;
+      line-height:1.65;
+    }
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ── HEADER ── */
+    .siteHeader{
+      position:absolute;top:0;left:0;right:0;z-index:20;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:20px clamp(16px,5vw,64px);
+    }
+    .logo{display:flex;align-items:center;gap:12px}
+    .logoMark{
+      display:grid;place-items:center;
+      width:44px;height:44px;
+      border:1px solid rgba(242,193,78,.5);
+      background:rgba(255,255,255,.08);
+      font-family:Georgia,serif;font-size:18px;font-weight:700;
+      color:var(--gold2);
+    }
+    .logoText span{display:block}
+    .logoText .sub{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+    .logoText .name{font-size:17px;font-weight:600}
+    .headerNav{display:flex;align-items:center;gap:24px}
+    .headerNav a{font-size:14px;font-weight:600;color:rgba(250,243,230,.8);transition:.15s}
+    .headerNav a:hover{color:#fff}
+    .headerCta{
+      display:flex;align-items:center;gap:8px;
+      padding:10px 20px;
+      background:var(--gold);
+      color:var(--dark2);
+      font-size:13px;font-weight:700;text-transform:uppercase;
+      transition:.15s;
+    }
+    .headerCta:hover{background:var(--gold2)}
+    @media(max-width:640px){.headerNav{display:none}}
+
+    /* ── HERO ── */
+    .hero{
+      position:relative;
+      min-height:95svh;
+      display:flex;flex-direction:column;justify-content:flex-end;
+      padding:0 clamp(16px,5vw,64px) clamp(48px,8vh,80px);
+      overflow:hidden;
+    }
+    .heroBg{
+      position:absolute;inset:0;
+      background:url("assets/hero-nha-hang.jpg") center 40%/cover no-repeat;
+    }
+    .heroOverlay{
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,rgba(11,31,18,.65) 0%,rgba(11,31,18,.28) 35%,rgba(7,18,11,.85) 72%,rgba(5,13,8,.97) 100%);
+    }
+    .heroContent{
+      position:relative;z-index:2;
+      max-width:800px;
+    }
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:12px;
+      font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;
+      color:var(--gold);margin-bottom:24px;
+    }
+    .eyebrow::before,.eyebrow::after{content:"";display:block;width:28px;height:1px;background:var(--gold)}
+    .hero h1{
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(42px,7vw,80px);
+      font-weight:900;font-style:italic;
+      line-height:.95;
+      color:var(--cream);
+      margin-bottom:20px;
+    }
+    .hero h1 em{color:var(--gold);font-style:inherit}
+    .hero p{
+      max-width:600px;
+      font-size:clamp(14px,1.8vw,17px);
+      color:var(--muted);
+      line-height:1.75;
+      margin-bottom:32px;
+    }
+    .heroBtns{display:flex;flex-wrap:wrap;gap:12px}
+    .btnPrimary{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 28px;
+      background:var(--gold);color:var(--dark2);
+      font-size:13px;font-weight:700;text-transform:uppercase;
+      box-shadow:0 6px 24px rgba(242,165,65,.28);
+      transition:.15s;
+    }
+    .btnPrimary:hover{background:var(--gold2)}
+    .btnSecondary{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 28px;
+      border:1px solid rgba(250,243,230,.3);
+      background:rgba(255,255,255,.08);
+      font-size:13px;font-weight:700;text-transform:uppercase;
+      transition:.15s;
+    }
+    .btnSecondary:hover{background:rgba(255,255,255,.16)}
+    .btnBlue{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 28px;
+      background:#0084ff;color:#fff;
+      font-size:13px;font-weight:700;text-transform:uppercase;
+      transition:.15s;
+    }
+    .btnBlue:hover{background:#006fd6}
+
+    /* ── STATS BAR ── */
+    .statsBar{
+      position:relative;z-index:2;
+      display:flex;flex-wrap:wrap;gap:0;
+      border-top:1px solid var(--line);
+      margin-top:48px;
+      padding-top:24px;
+    }
+    .statItem{
+      flex:1;min-width:120px;
+      padding:0 24px 0 0;
+    }
+    .statNum{font-size:28px;font-weight:900;color:var(--gold);font-family:Georgia,serif}
+    .statLabel{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+
+    /* ── MENU SECTION ── */
+    .menuSection{
+      background:var(--dark3);
+      padding:80px clamp(16px,5vw,64px);
+    }
+    .sectionHead{text-align:center;margin-bottom:48px}
+    .sectionEyebrow{
+      font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;
+      color:var(--gold);margin-bottom:12px;
+    }
+    .sectionHead h2{
+      font-family:Georgia,serif;
+      font-size:clamp(28px,4vw,44px);
+      font-weight:700;
+      color:var(--cream);
+      margin-bottom:12px;
+    }
+    .sectionHead p{color:var(--muted);max-width:560px;margin:0 auto;font-size:15px}
+
+    /* Tab filter */
+    .tabWrap{
+      display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+      margin-bottom:40px;
+    }
+    .tab{
+      padding:9px 18px;
+      border:1px solid rgba(242,193,78,.3);
+      background:transparent;
+      color:var(--muted);
+      font-size:13px;font-weight:600;cursor:pointer;
+      transition:.15s;font-family:inherit;
+    }
+    .tab:hover{border-color:var(--gold);color:var(--cream)}
+    .tab.active{
+      background:var(--gold);border-color:var(--gold);
+      color:var(--dark2);
+    }
+
+    /* Menu groups */
+    .menuGroup{display:none}
+    .menuGroup.show{display:block}
+
+    .groupTitle{
+      font-size:12px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;
+      color:var(--gold);margin-bottom:20px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .groupTitle::after{content:"";flex:1;height:1px;background:var(--line)}
+
+    .menuGrid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:2px;
+      margin-bottom:40px;
+    }
+    .menuItem{
+      padding:16px 20px;
+      background:rgba(255,255,255,.04);
+      border-left:2px solid transparent;
+      transition:.15s;
+    }
+    .menuItem:hover{
+      background:rgba(242,193,78,.06);
+      border-left-color:var(--gold);
+    }
+    .itemName{
+      font-size:15px;font-weight:700;
+      color:var(--cream);
+      margin-bottom:4px;
+    }
+    .itemDesc{
+      font-size:13px;color:var(--muted);
+      line-height:1.55;
+    }
+
+    /* ── ADDRESS SECTION ── */
+    .addressSection{
+      background:var(--dark2);
+      padding:80px clamp(16px,5vw,64px);
+    }
+    .addressGrid{
+      max-width:1100px;margin:0 auto;
+      display:grid;gap:32px;
+      grid-template-columns:1fr 1fr;
+    }
+    @media(max-width:768px){.addressGrid{grid-template-columns:1fr}}
+    .addressCard{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      overflow:hidden;
+    }
+    .mapFrame{
+      width:100%;aspect-ratio:4/3;
+      border:0;display:block;
+      background:rgba(0,0,0,.3);
+    }
+    .addressInfo{padding:20px}
+    .addressLabel{
+      font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+      color:var(--gold);margin-bottom:8px;
+    }
+    .addressName{font-size:18px;font-weight:700;margin-bottom:6px}
+    .addressText{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+    .addressBtns{display:flex;flex-wrap:wrap;gap:8px}
+    .btnMapPrimary{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:9px 16px;font-size:12px;font-weight:700;text-transform:uppercase;
+      background:var(--gold2);color:var(--dark2);transition:.15s;
+    }
+    .btnMapPrimary:hover{background:var(--gold)}
+    .btnMapSecondary{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:9px 16px;font-size:12px;font-weight:700;text-transform:uppercase;
+      border:1px solid rgba(255,255,255,.2);color:var(--cream);transition:.15s;
+    }
+    .btnMapSecondary:hover{background:rgba(255,255,255,.08)}
+
+    /* ── RATING BOX ── */
+    .ratingBox{
+      max-width:1100px;margin:32px auto 0;
+      display:flex;flex-col:row;align-items:center;justify-content:space-between;
+      gap:20px;flex-wrap:wrap;
+      border:1px solid rgba(242,193,78,.25);
+      background:rgba(242,193,78,.06);
+      padding:24px 28px;
+    }
+    .ratingStars{font-size:22px;color:var(--gold);letter-spacing:4px;margin-bottom:4px}
+    .ratingTitle{font-size:18px;font-weight:700}
+    .ratingDesc{font-size:13px;color:var(--muted);margin-top:4px;max-width:500px}
+    .ratingBtns{display:flex;flex-wrap:wrap;gap:10px;flex-shrink:0}
+
+    /* ── FOOTER ── */
+    .footer{
+      background:var(--dark);
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:24px clamp(16px,5vw,64px);
+      display:flex;align-items:center;justify-content:space-between;
+      flex-wrap:wrap;gap:12px;
+    }
+    .footerLeft{font-size:14px;font-weight:600}
+    .footerRight{font-size:13px;color:var(--muted)}
+    .backLink{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:13px;color:var(--muted);
+      transition:.15s;
+    }
+    .backLink:hover{color:var(--cream)}
+
+    /* ── MOBILE NAV ── */
+    .mobileNav{
+      display:none;
+      position:fixed;inset-x:0;bottom:0;z-index:50;
+      grid-template-columns:repeat(4,1fr);
+      border-top:1px solid rgba(255,255,255,.1);
+      background:var(--dark2);
+      box-shadow:0 -8px 24px rgba(0,0,0,.4);
+    }
+    @media(max-width:768px){.mobileNav{display:grid}}
+    .mobileNavItem{
+      display:flex;flex-direction:column;align-items:center;
+      gap:4px;padding:10px 4px 14px;
+      font-size:10px;font-weight:700;text-transform:uppercase;
+      color:var(--muted);transition:.15s;
+    }
+    .mobileNavItem svg{width:22px;height:22px}
+    .mobileNavItem.gold{background:var(--gold);color:var(--dark2)}
+    .mobileNavItem.green{background:var(--green);color:#fff}
+
+    /* ── BACK TO TOP ── */
+    .backToTop{
+      position:fixed;bottom:80px;right:16px;z-index:60;
+      display:grid;place-items:center;
+      width:48px;height:48px;
+      background:var(--green);
+      border-radius:50%;
+      box-shadow:0 6px 20px rgba(15,90,44,.45);
+      opacity:0;pointer-events:none;transition:.25s;
+    }
+    .backToTop.visible{opacity:1;pointer-events:auto}
+    @media(min-width:769px){.backToTop{bottom:24px}}
+    body{padding-bottom:60px}
+    @media(min-width:769px){body{padding-bottom:0}}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="siteHeader">
+  <a href="/" class="logo" aria-label="Thiện Nga - Trang chủ">
+    <div class="logoMark">TN</div>
+    <div class="logoText">
+      <span class="sub">Quán Nhậu</span>
+      <span class="name">Thiện Nga</span>
+    </div>
+  </a>
+  <nav class="headerNav" aria-label="Điều hướng chính">
+    <a href="#thuc-don">Thực đơn</a>
+    <a href="#dia-chi">Địa chỉ</a>
+    <a href="index.html">Tiệc cưới</a>
+  </nav>
+  <a href="tel:0965626128" class="headerCta">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.7 5.1 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.3 1.3.4 2.6.6 4 .6.7 0 1.2.5 1.2 1.2v3.5c0 .7-.5 1.2-1.2 1.2C10.6 21.9 2.1 13.4 2.1 3.4c0-.7.5-1.2 1.2-1.2h3.5c.7 0 1.2.5 1.2 1.2 0 1.4.2 2.8.6 4 .1.4 0 .8-.3 1.2l-1.7 2.2Z"/></svg>
+    0965 626 128
+  </a>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="heroBg"></div>
+  <div class="heroOverlay"></div>
+  <div class="heroContent">
+    <p class="eyebrow">Chốn hẹn của tình anh em</p>
+    <h1>Quán Nhậu<br><em>Thiện Nga</em></h1>
+    <p>Quán em không giấu giá — nói ngân sách, em lên thực đơn phù hợp. Không dư không thiếu, không có giá phút. Đại Lãnh & Tu Bông, Khánh Hoà.</p>
+    <div class="heroBtns">
+      <a href="tel:0965626128" class="btnPrimary">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.7 5.1 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.3 1.3.4 2.6.6 4 .6.7 0 1.2.5 1.2 1.2v3.5c0 .7-.5 1.2-1.2 1.2C10.6 21.9 2.1 13.4 2.1 3.4c0-.7.5-1.2 1.2-1.2h3.5c.7 0 1.2.5 1.2 1.2 0 1.4.2 2.8.6 4 .1.4 0 .8-.3 1.2l-1.7 2.2Z"/></svg>
+        Đặt bàn ngay
+      </a>
+      <a href="https://zalo.me/0965626128" target="_blank" rel="noreferrer" class="btnSecondary">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.8 3 2.7 6.5 2.7 10.9c0 2.5 1.3 4.7 3.5 6.2l-.8 3.7 4-2.1c.8.2 1.7.3 2.6.3 5.2 0 9.3-3.5 9.3-8S17.2 3 12 3Zm-4.1 9.2 2.1-3h-2V7.8h4.4l-2.2 3.1h2.3v1.3H7.9Zm6.1 0h-1.6V7.8H14v4.4Zm3.8 0h-3.1V7.8h1.6v3h1.5v1.4Z"/></svg>
+        Nhắn Zalo
+      </a>
+      <a href="https://m.me/truong.yen.197776" target="_blank" rel="noreferrer" class="btnBlue">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2C6.4 2.2 2 6.3 2 11.6c0 2.8 1.2 5.2 3.3 6.9v3.3l3-1.7c.9.2 1.8.4 2.7.4 5.6 0 10-4.1 10-9.4S17.6 2.2 12 2.2Zm1 12.7-2.5-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.4 5.7Z"/></svg>
+        Messenger
+      </a>
+    </div>
+    <div class="statsBar">
+      <div class="statItem"><div class="statNum">100+</div><div class="statLabel">Món trong thực đơn</div></div>
+      <div class="statItem"><div class="statNum">2</div><div class="statLabel">Cơ sở tại Khánh Hoà</div></div>
+      <div class="statItem"><div class="statNum">08–22h</div><div class="statLabel">Mở cửa mỗi ngày</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU SECTION -->
+<section class="menuSection" id="thuc-don">
+  <div class="sectionHead">
+    <p class="sectionEyebrow">Thực đơn đầy đủ</p>
+    <h2>100 món — nhậu đủ kiểu</h2>
+    <p>Khai vị, gỏi, món chính bò gà heo hải sản, lẩu, tráng miệng. Chọn tab để lọc theo nhóm.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabWrap" role="tablist" aria-label="Lọc thực đơn theo nhóm">
+    <button class="tab active" role="tab" aria-selected="true" data-group="all">Tất cả</button>
+    <button class="tab" role="tab" data-group="khai-vi">🥗 Khai Vị (25)</button>
+    <button class="tab" role="tab" data-group="bo">🥩 Bò (16)</button>
+    <button class="tab" role="tab" data-group="ga">🍗 Gà (11)</button>
+    <button class="tab" role="tab" data-group="heo">🐷 Heo (9)</button>
+    <button class="tab" role="tab" data-group="tom-muc">🦐 Tôm & Mực (13)</button>
+    <button class="tab" role="tab" data-group="ca">🐟 Cá & Bào Ngư (8)</button>
+    <button class="tab" role="tab" data-group="lau">🍲 Lẩu (13)</button>
+    <button class="tab" role="tab" data-group="trang-mieng">🍮 Tráng Miệng (5)</button>
+  </div>
+
+  <!-- All -->
+  <div class="menuGroup show" id="group-all">
+
+    <!-- Khai Vị -->
+    <p class="groupTitle">🥗 Khai Vị — Soup & Gỏi</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Soup cua hải sản</div><div class="itemDesc">Hương vị biển cả thanh ngọt hòa quyện trong từng muỗng súp nóng hổi.</div></div>
+      <div class="menuItem"><div class="itemName">Soup hải sản ngọc bích</div><div class="itemDesc">Món súp tinh tế với sắc xanh ngọc bích tuyệt đẹp, hội tụ tinh hoa hải sản.</div></div>
+      <div class="menuItem"><div class="itemName">Soup cua bào ngư</div><div class="itemDesc">Sự kết hợp hoàn hảo giữa thịt cua thượng hạng và bào ngư trân quý.</div></div>
+      <div class="menuItem"><div class="itemName">Soup bào ngư, nấm đông cô Nhật</div><div class="itemDesc">Bào ngư thượng phẩm hầm cùng nấm đông cô Nhật Bản mang đến vị ngọt thanh tao.</div></div>
+      <div class="menuItem"><div class="itemName">Soup hàu sữa, nấm đông trùng hạ thảo</div><div class="itemDesc">Hàu sữa béo ngậy quyện cùng đông trùng hạ thảo bổ dưỡng, đẳng cấp.</div></div>
+      <div class="menuItem"><div class="itemName">Soup bồ câu, hạt sen</div><div class="itemDesc">Món súp thanh mát, bồi bổ sức khỏe với thịt bồ câu mềm thơm và hạt sen bùi bùi.</div></div>
+      <div class="menuItem"><div class="itemName">Soup cua rong biển</div><div class="itemDesc">Hương vị đại dương tươi mát từ rong biển kết hợp thịt cua đậm đà.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi hải sản khoai môn, sốt kim Quốc</div><div class="itemDesc">Sự phá cách độc đáo với khoai môn bùi bùi và nước sốt kim Quốc trứ danh.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi hải sản, cù hủ dừa</div><div class="itemDesc">Cù hủ dừa giòn ngọt kết hợp cùng hải sản tươi rói, đánh thức mọi giác quan.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi hải sản thập cẩm</div><div class="itemDesc">Bản hòa tấu hải sản tươi ngon cùng nước trộn gỏi chua ngọt hài hòa.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi tiến vua, tôm mực</div><div class="itemDesc">Món gỏi tiến vua thượng hạng với tôm mực giòn sần sật, thanh tao.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi bê thui trộn rau má</div><div class="itemDesc">Bê thui mềm ngọt quyện cùng vị nhẫn đắng nhẹ của rau má, kích thích vị giác.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi bê thui bóp thấu</div><div class="itemDesc">Thịt bê thui thái mỏng bóp thấu đậm đà, chua cay mặn ngọt tròn vị.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi bắp bò sốt chanh dây</div><div class="itemDesc">Bắp bò mềm tan hòa quyện cùng nước sốt chanh dây chua thanh, thơm lừng.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi bò bóp thấu</div><div class="itemDesc">Món gỏi truyền thống với thịt bò mềm ướp gia vị đậm đà, đánh thức khẩu vị.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi bò rau má non</div><div class="itemDesc">Thịt bò tơ mềm mại kết hợp cùng rau má non tươi mát, thanh lọc cơ thể.</div></div>
+      <div class="menuItem"><div class="itemName">Gỏi bò nướng trộn cà giòn</div><div class="itemDesc">Bò nướng thơm lừng trộn cùng cà chua giòn ngọt, chua chua cay cay hấp dẫn.</div></div>
+      <div class="menuItem"><div class="itemName">Set khai vị Phúc Lộc</div><div class="itemDesc">Khởi đầu may mắn với set khai vị Phúc Lộc tinh tế và đa dạng hương vị.</div></div>
+      <div class="menuItem"><div class="itemName">Set khai vị Phú Quý</div><div class="itemDesc">Món khai vị mang ý nghĩa phú quý, sung túc với những nguyên liệu tuyển chọn.</div></div>
+      <div class="menuItem"><div class="itemName">Set Khai vị Uyên Ương</div><div class="itemDesc">Biểu tượng của tình yêu vĩnh cửu, set khai vị Uyên Ương mang đến sự lãng mạn.</div></div>
+      <div class="menuItem"><div class="itemName">Set Khai vị Song Hỷ</div><div class="itemDesc">Lời chúc hạnh phúc nhân đôi với set khai vị Song Hỷ hài hòa, đẹp mắt.</div></div>
+      <div class="menuItem"><div class="itemName">Set Khai vị Cát Tường</div><div class="itemDesc">Khởi đầu tốt lành, may mắn với set khai vị Cát Tường đầy màu sắc.</div></div>
+      <div class="menuItem"><div class="itemName">Set Khai vị Như ý</div><div class="itemDesc">Mọi sự như ý, trọn vẹn với set khai vị được bài trí tỉ mỉ, công phu.</div></div>
+      <div class="menuItem"><div class="itemName">Set Khai vị Deluxe</div><div class="itemDesc">Trải nghiệm ẩm thực đỉnh cao với set khai vị Deluxe sang trọng, đẳng cấp.</div></div>
+      <div class="menuItem"><div class="itemName">Set Khai vị Premium</div><div class="itemDesc">Tuyệt tác khai vị Premium với những nguyên liệu thượng hạng bậc nhất.</div></div>
+    </div>
+
+    <!-- Bò -->
+    <p class="groupTitle">🥩 Món Bò</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Bò sốt cam tươi</div><div class="itemDesc">Thịt bò tơ mềm tan quyện cùng sốt cam tươi chua ngọt, thơm lừng. Ăn kèm bánh mì & salad trộn.</div></div>
+      <div class="menuItem"><div class="itemName">Bò sốt chanh dây</div><div class="itemDesc">Những lát thịt bò mỏng kết hợp nước sốt chanh dây thanh mát, ăn kèm bánh mì & salad trộn.</div></div>
+      <div class="menuItem"><div class="itemName">Bò lúc lắc, hạt điều</div><div class="itemDesc">Bò lúc lắc mềm mọng kết hợp độc đáo với hạt điều rang giòn rụm, ăn kèm bánh mì & salad.</div></div>
+      <div class="menuItem"><div class="itemName">Bò cuộn cải xanh</div><div class="itemDesc">Bò cuộn cải xanh thanh đạm, chấm cùng nước sốt mù tạt cay nồng. Ăn kèm xôi dừa.</div></div>
+      <div class="menuItem"><div class="itemName">Bò né sốt cải mầm</div><div class="itemDesc">Thịt bò né nóng hổi xèo xèo, ăn kèm sốt cải mầm thanh mát, bổ dưỡng.</div></div>
+      <div class="menuItem"><div class="itemName">Bò né khổ qua, nấm Linh Chi</div><div class="itemDesc">Sự kết hợp hoàn hảo giữa thịt bò mềm ngọt, khổ qua thanh mát và nấm Linh Chi trân quý.</div></div>
+      <div class="menuItem"><div class="itemName">Bò tản sốt tiêu đen</div><div class="itemDesc">Bò tản mềm mại quyện cùng sốt tiêu đen cay nồng, đậm đà hương vị.</div></div>
+      <div class="menuItem"><div class="itemName">Bò tản sốt tỏi Lý Sơn</div><div class="itemDesc">Bò tản nướng thơm lừng kết hợp sốt tỏi Lý Sơn đặc trưng, nồng nàn quyến rũ.</div></div>
+      <div class="menuItem"><div class="itemName">Chả bò lồng đèn</div><div class="itemDesc">Chả bò lồng đèn tinh tế, dai giòn sần sật, mang hương vị truyền thống đậm đà.</div></div>
+      <div class="menuItem"><div class="itemName">Bắp bò nấu tiêu xanh</div><div class="itemDesc">Bắp bò hầm nhừ cùng tiêu xanh cay nồng, nước dùng ngọt thanh, ấm bụng.</div></div>
+      <div class="menuItem"><div class="itemName">Đuôi bò nấu Lagur</div><div class="itemDesc">Đuôi bò hầm Lagur kiểu Pháp mềm rục, đậm đà hương vị thảo mộc tinh tế.</div></div>
+      <div class="menuItem"><div class="itemName">Ba chỉ bò nhúng dấm</div><div class="itemDesc">Ba chỉ bò cuộn tròn nhúng nước dấm chua thanh, ăn kèm rau sống tươi mát.</div></div>
+      <div class="menuItem"><div class="itemName">Ba chỉ bò nhúng mẻ</div><div class="itemDesc">Ba chỉ bò béo ngậy nhúng nước mẻ chua dịu, thơm lừng hương vị đồng quê.</div></div>
+      <div class="menuItem"><div class="itemName">Bê Thui nhúng dấm</div><div class="itemDesc">Bê thui thái mỏng nhúng nước dấm thanh tao, giữ trọn vị ngọt tự nhiên.</div></div>
+      <div class="menuItem"><div class="itemName">Bê Thui nhúng mẻ</div><div class="itemDesc">Bê thui mềm ngọt hòa quyện cùng nước nhúng mẻ chua thanh, đậm đà khó quên.</div></div>
+      <div class="menuItem"><div class="itemName">Lưỡi Bò hầm nho xanh, sốt vang đỏ</div><div class="itemDesc">Lưỡi bò hầm mềm rục cùng nho xanh tươi mát và sốt vang đỏ sang trọng.</div></div>
+    </div>
+
+    <!-- Gà -->
+    <p class="groupTitle">🍗 Món Gà</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Gà Uyên Ương — Xôi chiên</div><div class="itemDesc">Gà quay da giòn rụm kết hợp cùng xôi chiên phồng béo ngậy, tượng trưng cho tình yêu bền chặt.</div></div>
+      <div class="menuItem"><div class="itemName">Gà bó xôi</div><div class="itemDesc">Gà ta nguyên con bọc xôi nướng vàng ươm, giữ trọn vị ngọt mềm của thịt gà bên trong.</div></div>
+      <div class="menuItem"><div class="itemName">Gà quay sốt mắm nhỉ</div><div class="itemDesc">Gà quay da giòn tan áo lớp sốt mắm nhỉ đậm đà, thơm lừng hương vị truyền thống.</div></div>
+      <div class="menuItem"><div class="itemName">Gà quay sốt Teriyaki</div><div class="itemDesc">Gà quay kiểu Nhật với nước sốt Teriyaki ngọt thanh, bóng bẩy hấp dẫn.</div></div>
+      <div class="menuItem"><div class="itemName">Gà quay sốt tiêu đen</div><div class="itemDesc">Gà quay thơm lừng quyện cùng sốt tiêu đen cay nồng, kích thích vị giác tối đa.</div></div>
+      <div class="menuItem"><div class="itemName">Gà nướng muối ớt</div><div class="itemDesc">Gà nướng than hoa thơm phức, đậm đà vị cay nồng của muối ớt đặc trưng.</div></div>
+      <div class="menuItem"><div class="itemName">Gà nổ muối hạt</div><div class="itemDesc">Gà ta nổ muối hạt sành điệu, thịt dai ngọt tự nhiên, lớp da giòn sần sật.</div></div>
+      <div class="menuItem"><div class="itemName">Gà hấp truyền thống</div><div class="itemDesc">Gà ta hấp lá chanh truyền thống, giữ trọn vẹn hương vị thanh tao, ngọt thịt.</div></div>
+      <div class="menuItem"><div class="itemName">Gà ủ xì dầu</div><div class="itemDesc">Gà ủ xì dầu thượng hạng, thịt mềm thấm đẫm gia vị đậm đà, màu sắc bắt mắt.</div></div>
+      <div class="menuItem"><div class="itemName">Gà hấp mắm nhỉ</div><div class="itemDesc">Gà hấp mắm nhỉ đậm đà, thịt gà mềm ngọt quyện cùng hương mắm nồng nàn.</div></div>
+      <div class="menuItem"><div class="itemName">Gà hấp nấm</div><div class="itemDesc">Gà ta hấp cùng các loại nấm tươi mát, mang đến món ăn thanh đạm, bồi bổ sức khỏe.</div></div>
+    </div>
+
+    <!-- Heo -->
+    <p class="groupTitle">🐷 Món Heo</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Sườn non nấu đậu</div><div class="itemDesc">Sườn non hầm nhừ cùng các loại đậu bùi béo, bổ dưỡng, thanh mát.</div></div>
+      <div class="menuItem"><div class="itemName">Giò heo rút xương ủ muối chiên giòn</div><div class="itemDesc">Giò heo rút xương ủ muối đậm đà, chiên giòn rụm lớp da, bên trong mềm mọng.</div></div>
+      <div class="menuItem"><div class="itemName">Giò heo hầm hải sâm, sốt tóc tiên</div><div class="itemDesc">Tuyệt phẩm giò heo hầm hải sâm thượng hạng cùng sốt tóc tiên đen óng, sang trọng.</div></div>
+      <div class="menuItem"><div class="itemName">Giò heo rút xương, hạt sen</div><div class="itemDesc">Giò heo rút xương hầm mềm rục cùng hạt sen bùi bùi, thanh tao bồi bổ sức khỏe.</div></div>
+      <div class="menuItem"><div class="itemName">Heo rừng nướng giấy bạc</div><div class="itemDesc">Heo rừng lai nướng giấy bạc giữ trọn vị ngọt tự nhiên, thịt dai giòn sần sật.</div></div>
+      <div class="menuItem"><div class="itemName">Heo rừng nướng ống tre</div><div class="itemDesc">Heo rừng nướng ống tre độc đáo, thơm lừng hương vị núi rừng hoang dã.</div></div>
+      <div class="menuItem"><div class="itemName">Heo rừng nấu tiêu xanh</div><div class="itemDesc">Thịt heo rừng săn chắc nấu cùng tiêu xanh cay nồng, nước dùng đậm đà hấp dẫn.</div></div>
+      <div class="menuItem"><div class="itemName">Heo rừng xào sả ớt</div><div class="itemDesc">Heo rừng xào sả ớt thơm lừng, cay nồng kích thích, đánh thức mọi giác quan.</div></div>
+      <div class="menuItem"><div class="itemName">Heo rừng hấp sả, tía tô</div><div class="itemDesc">Heo rừng hấp sả và lá tía tô thanh mát, giữ nguyên vị ngọt mộc mạc của thịt.</div></div>
+    </div>
+
+    <!-- Tôm Mực -->
+    <p class="groupTitle">🦐 Tôm & Mực</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Mực lá hấp nước dừa</div><div class="itemDesc">Mực lá tươi rói hấp cùng nước dừa thanh ngọt, giữ trọn độ giòn sần sật tự nhiên.</div></div>
+      <div class="menuItem"><div class="itemName">Mực lá sốt Thái</div><div class="itemDesc">Mực lá giòn ngọt hòa quyện trong nước sốt Thái chua cay bùng nổ hương vị.</div></div>
+      <div class="menuItem"><div class="itemName">Mực lá chiên xù</div><div class="itemDesc">Mực lá tẩm bột chiên xù vàng ươm, lớp vỏ giòn rụm bao bọc thịt mực tươi ngọt.</div></div>
+      <div class="menuItem"><div class="itemName">Mực Cơm chiên nước mắm</div><div class="itemDesc">Mực cơm chiên nước mắm đậm đà, mặn ngọt hài hòa, thơm lừng khó cưỡng.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm nổ muối hạt, rau răm</div><div class="itemDesc">Tôm sú tươi nổ muối hạt sành điệu, ăn kèm rau răm thơm nồng, kích thích vị giác.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm hấp nước dừa</div><div class="itemDesc">Tôm sú hấp nước dừa xiêm thanh mát, thịt tôm đỏ au, ngọt lịm tự nhiên.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm sốt me</div><div class="itemDesc">Tôm sú chiên vàng áo lớp sốt me chua ngọt đậm đà, hấp dẫn mọi thực khách.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm sốt bơ tỏi</div><div class="itemDesc">Tôm sú béo ngậy quyện cùng sốt bơ tỏi thơm lừng, béo ngậy đầy lôi cuốn.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm chiên xù</div><div class="itemDesc">Tôm sú tẩm bột chiên xù giòn rụm, chấm cùng tương ớt cay nhẹ tuyệt hảo.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm chiên Hoàng Bào</div><div class="itemDesc">Tôm chiên Hoàng Bào sang trọng với lớp áo giòn tan, thịt tôm tươi ngọt bên trong.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm ủ muối vị Thái</div><div class="itemDesc">Tôm ủ muối hột mang hương vị Thái Lan chua cay mặn ngọt đặc trưng, độc đáo.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm rang muối HK</div><div class="itemDesc">Tôm rang muối kiểu Hong Kong đậm đà, tỏi ớt phi thơm lừng, giòn rụm vỏ ngoài.</div></div>
+      <div class="menuItem"><div class="itemName">Tôm hấp cải thìa, sốt đông cô</div><div class="itemDesc">Tôm sú hấp thanh đạm ăn kèm cải thìa xanh mướt và sốt nấm đông cô thượng hạng.</div></div>
+    </div>
+
+    <!-- Cá & Bào Ngư -->
+    <p class="groupTitle">🐟 Cá & Bào Ngư</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Cá mú chiên giòn, sốt chanh dây</div><div class="itemDesc">Cá mú phi lê chiên giòn rụm, rưới sốt chanh dây chua ngọt thanh mát, giải ngấy.</div></div>
+      <div class="menuItem"><div class="itemName">Cá mú hấp chua ngọt</div><div class="itemDesc">Cá mú nguyên con hấp chua ngọt đậm đà, thịt cá trắng ngần, mềm ngọt tự nhiên.</div></div>
+      <div class="menuItem"><div class="itemName">Cá mú hấp HK</div><div class="itemDesc">Cá mú hấp xì dầu kiểu Hong Kong thượng hạng, giữ trọn vị tinh khiết của hải sản.</div></div>
+      <div class="menuItem"><div class="itemName">Cá mú chưng tương hạt</div><div class="itemDesc">Cá mú chưng tương hạt đậm đà hương vị truyền thống, thịt cá thấm đẫm gia vị.</div></div>
+      <div class="menuItem"><div class="itemName">Bào ngư rang bơ tỏi cay</div><div class="itemDesc">Bào ngư trân quý rang bơ tỏi thơm lừng, điểm xuyết vị cay nhẹ kích thích.</div></div>
+      <div class="menuItem"><div class="itemName">Bào ngư hầm nấm đông cô Nhật</div><div class="itemDesc">Bào ngư thượng phẩm hầm mềm nhừ cùng nấm đông cô Nhật Bản bổ dưỡng, đẳng cấp.</div></div>
+      <div class="menuItem"><div class="itemName">Bào ngư xào ngũ quả</div><div class="itemDesc">Bào ngư xào cùng năm loại củ quả tươi mát, mang đến sự cân bằng hoàn hảo.</div></div>
+      <div class="menuItem"><div class="itemName">Bào ngư hấp cải thìa, sốt X.O</div><div class="itemDesc">Bào ngư hấp thanh đạm ăn kèm cải thìa và sốt X.O trứ danh, hương vị đỉnh cao.</div></div>
+    </div>
+
+    <!-- Lẩu -->
+    <p class="groupTitle">🍲 Món Lẩu</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Lẩu Thái hải sản</div><div class="itemDesc">Lẩu Thái chua cay bùng nổ hương vị, nhúng kèm hải sản tươi rói đa dạng.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu măng chua cá mú</div><div class="itemDesc">Lẩu cá mú măng chua thanh mát, nước dùng ngọt thanh, thịt cá dai ngon sần sật.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu măng chua cá bóp</div><div class="itemDesc">Lẩu cá bóp béo ngậy nấu măng chua dịu nhẹ, kích thích vị giác đến giọt cuối cùng.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu mực nấu é, ớt xiêm xanh</div><div class="itemDesc">Lẩu mực tươi rói nấu cùng lá é thơm lừng và ớt xiêm xanh cay nồng đặc trưng.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu mực Đại Lãnh</div><div class="itemDesc">Lẩu mực Đại Lãnh trứ danh, nước dùng ngọt lịm từ hải sản tươi sống vùng biển.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu gà nấu lá giang</div><div class="itemDesc">Lẩu gà ta nấu lá giang chua thanh, thịt gà dai ngọt, nước dùng đậm đà dân dã.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu gà nấu é, ớt xiêm xanh</div><div class="itemDesc">Sự kết hợp độc đáo giữa gà ta, lá é thơm nồng và vị cay xé lưỡi của ớt xiêm xanh.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu gà chanh sả, măng chua</div><div class="itemDesc">Lẩu gà chanh sả thơm lừng kết hợp măng chua thanh mát, giải nhiệt cơ thể.</div></div>
+      <div class="menuItem"><div class="itemName">Gà tiềm hạt sen</div><div class="itemDesc">Gà ta tiềm hạt sen bổ dưỡng, nước dùng ngọt thanh tao, thịt gà mềm rục tan trong miệng.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu bồ câu, khổ qua</div><div class="itemDesc">Lẩu bồ câu bồi bổ sức khỏe nấu cùng khổ qua nhẫn đắng, thanh mát giải độc.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu chả cá thác lác, khổ qua</div><div class="itemDesc">Lẩu chả cá thác lác dai giòn sần sật nấu cùng khổ qua thanh mát, ngọt dịu.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu bò thập cẩm</div><div class="itemDesc">Lẩu bò thập cẩm đa dạng các loại thịt và gân bò mềm nhừ, nước dùng đậm đà.</div></div>
+      <div class="menuItem"><div class="itemName">Lẩu riêu kim tiền</div><div class="itemDesc">Lẩu riêu cua đồng kim tiền béo ngậy, nước dùng thanh ngọt, mang đậm hương vị quê hương.</div></div>
+    </div>
+
+    <!-- Tráng Miệng -->
+    <p class="groupTitle">🍮 Tráng Miệng</p>
+    <div class="menuGrid">
+      <div class="menuItem"><div class="itemName">Hoa quả theo mùa</div><div class="itemDesc">Trái cây tươi theo mùa thanh mát, ngọt ngào, khép lại bữa tiệc một cách trọn vẹn.</div></div>
+      <div class="menuItem"><div class="itemName">Rau câu flan</div><div class="itemDesc">Rau câu flan núng nính, sự kết hợp hoàn hảo giữa vị giòn mát và béo ngậy.</div></div>
+      <div class="menuItem"><div class="itemName">Bánh Panna Cotta</div><div class="itemDesc">Bánh Panna Cotta kiểu Ý mềm mịn như nhung, tan chảy ngọt ngào nơi đầu lưỡi.</div></div>
+      <div class="menuItem"><div class="itemName">Sữa chua mix vị nhiệt đới</div><div class="itemDesc">Sữa chua thanh mát mix cùng các loại trái cây nhiệt đới chua ngọt hài hòa.</div></div>
+      <div class="menuItem"><div class="itemName">Đậu hủ non mix vị</div><div class="itemDesc">Đậu hủ non mix vị thanh mát, nhẹ nhàng kết thúc bữa nhậu.</div></div>
+    </div>
+  </div>
+
+  <!-- Individual groups (hidden by default, shown by JS) -->
+  <div class="menuGroup" id="group-khai-vi"></div>
+  <div class="menuGroup" id="group-bo"></div>
+  <div class="menuGroup" id="group-ga"></div>
+  <div class="menuGroup" id="group-heo"></div>
+  <div class="menuGroup" id="group-tom-muc"></div>
+  <div class="menuGroup" id="group-ca"></div>
+  <div class="menuGroup" id="group-lau"></div>
+  <div class="menuGroup" id="group-trang-mieng"></div>
+
+</section>
+
+<!-- ADDRESS SECTION -->
+<section class="addressSection" id="dia-chi">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="sectionHead">
+      <p class="sectionEyebrow">Địa chỉ & Liên hệ</p>
+      <h2>Đặt bàn nhanh qua điện thoại hoặc Zalo</h2>
+      <p>Hai cơ sở tại Vạn Ninh, Khánh Hoà — gần bãi biển Đại Lãnh.</p>
+    </div>
+    <div class="addressGrid">
+      <div class="addressCard">
+        <iframe class="mapFrame" title="Bản đồ Cơ sở Đại Lãnh" loading="lazy"
+          src="https://www.google.com/maps?q=12.7986633,109.35498(Thiện+Nga+Đại+Lãnh)&z=17&output=embed"
+          referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        <div class="addressInfo">
+          <p class="addressLabel">Cơ sở 1</p>
+          <p class="addressName">Đại Lãnh</p>
+          <p class="addressText">Thôn Ninh Mã, Xã Đại Lãnh, Vạn Ninh, Khánh Hoà</p>
+          <div class="addressBtns">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=12.7986633,109.35498" target="_blank" rel="noreferrer" class="btnMapPrimary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5c-3.5 0-6.3 2.8-6.3 6.3 0 4.4 5.3 11.4 5.5 11.7.4.5 1.2.5 1.6 0 .2-.3 5.5-7.3 5.5-11.7 0-3.5-2.8-6.3-6.3-6.3Zm0 8.6a2.3 2.3 0 1 1 0-4.6 2.3 2.3 0 0 1 0 4.6Z"/></svg>
+              Chỉ đường
+            </a>
+            <a href="https://www.google.com/maps/search/?api=1&query=Quán+Nhậu+Thiện+Nga+Đại+Lãnh+Khánh+Hoà" target="_blank" rel="noreferrer" class="btnMapSecondary">Mở Maps</a>
+          </div>
+        </div>
+      </div>
+      <div class="addressCard">
+        <iframe class="mapFrame" title="Bản đồ Cơ sở Tu Bông" loading="lazy"
+          src="https://www.google.com/maps?q=12.7772465,109.3086829(Thiện+Nga+Tu+Bông)&z=17&output=embed"
+          referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        <div class="addressInfo">
+          <p class="addressLabel">Cơ sở 2</p>
+          <p class="addressName">Tu Bông</p>
+          <p class="addressText">Cầu Tân Phước, Tu Bông, Vạn Ninh, Khánh Hoà</p>
+          <div class="addressBtns">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=12.7772465,109.3086829" target="_blank" rel="noreferrer" class="btnMapPrimary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5c-3.5 0-6.3 2.8-6.3 6.3 0 4.4 5.3 11.4 5.5 11.7.4.5 1.2.5 1.6 0 .2-.3 5.5-7.3 5.5-11.7 0-3.5-2.8-6.3-6.3-6.3Zm0 8.6a2.3 2.3 0 1 1 0-4.6 2.3 2.3 0 0 1 0 4.6Z"/></svg>
+              Chỉ đường
+            </a>
+            <a href="https://www.google.com/maps/search/?api=1&query=Quán+Nhậu+Thiện+Nga+Tu+Bông+Khánh+Hoà" target="_blank" rel="noreferrer" class="btnMapSecondary">Mở Maps</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ratingBox">
+      <div>
+        <div class="ratingStars">★★★★★</div>
+        <p class="ratingTitle">Ăn ngon, nhậu vui? Cho tụi mình 5 sao trên Google!</p>
+        <p class="ratingDesc">Một đánh giá của bạn giúp anh em xa gần dễ tìm thấy Thiện Nga hơn. Chỉ mất 30 giây.</p>
+      </div>
+      <div class="ratingBtns">
+        <a href="https://www.google.com/maps/search/?api=1&query=Quán+Nhậu+Thiện+Nga+Đại+Lãnh+Khánh+Hoà" target="_blank" rel="noreferrer" class="btnMapPrimary">★ Đánh giá Đại Lãnh</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Quán+Nhậu+Thiện+Nga+Tu+Bông+Khánh+Hoà" target="_blank" rel="noreferrer" class="btnMapSecondary">★ Đánh giá Tu Bông</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footerLeft">Quán Nhậu Thiện Nga · Hotline 0965 626 128</div>
+  <a href="index.html" class="backLink">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z"/></svg>
+    Xem trang Tiệc Cưới
+  </a>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobileNav" aria-label="Liên hệ nhanh">
+  <a href="#thuc-don" class="mobileNavItem">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 5.8c0-.6.4-1 1-1h14c.6 0 1 .4 1 1s-.4 1-1 1H5c-.6 0-1-.4-1-1Zm0 6.2c0-.6.4-1 1-1h14c.6 0 1 .4 1 1s-.4 1-1 1H5c-.6 0-1-.4-1-1Zm1 5.2c-.6 0-1 .4-1 1s.4 1 1 1h14c.6 0 1-.4 1-1s-.4-1-1-1H5Z"/></svg>
+    Menu
+  </a>
+  <a href="https://zalo.me/0965626128" target="_blank" rel="noreferrer" class="mobileNavItem">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.8 3 2.7 6.5 2.7 10.9c0 2.5 1.3 4.7 3.5 6.2l-.8 3.7 4-2.1c.8.2 1.7.3 2.6.3 5.2 0 9.3-3.5 9.3-8S17.2 3 12 3Zm-4.1 9.2 2.1-3h-2V7.8h4.4l-2.2 3.1h2.3v1.3H7.9Zm6.1 0h-1.6V7.8H14v4.4Zm3.8 0h-3.1V7.8h1.6v3h1.5v1.4Z"/></svg>
+    Zalo
+  </a>
+  <a href="tel:0965626128" class="mobileNavItem green">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.7 5.1 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.3 1.3.4 2.6.6 4 .6.7 0 1.2.5 1.2 1.2v3.5c0 .7-.5 1.2-1.2 1.2C10.6 21.9 2.1 13.4 2.1 3.4c0-.7.5-1.2 1.2-1.2h3.5c.7 0 1.2.5 1.2 1.2 0 1.4.2 2.8.6 4 .1.4 0 .8-.3 1.2l-1.7 2.2Z"/></svg>
+    Gọi
+  </a>
+  <a href="#dia-chi" class="mobileNavItem gold">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5c-3.5 0-6.3 2.8-6.3 6.3 0 4.4 5.3 11.4 5.5 11.7.4.5 1.2.5 1.6 0 .2-.3 5.5-7.3 5.5-11.7 0-3.5-2.8-6.3-6.3-6.3Zm0 8.6a2.3 2.3 0 1 1 0-4.6 2.3 2.3 0 0 1 0 4.6Z"/></svg>
+    Địa chỉ
+  </a>
+</nav>
+
+<!-- BACK TO TOP -->
+<a href="#top" class="backToTop" id="backToTop" aria-label="Lên đầu trang">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+</a>
+
+<script>
+// Tab filtering
+(function() {
+  var tabs = document.querySelectorAll('.tab');
+  var allGroup = document.getElementById('group-all');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      this.classList.add('active');
+      this.setAttribute('aria-selected','true');
+
+      var group = this.dataset.group;
+
+      // All groups: just show #group-all
+      allGroup.classList.toggle('show', group === 'all');
+
+      // Individual groups: scroll to heading within #group-all
+      if (group !== 'all') {
+        allGroup.classList.add('show');
+        var map = {
+          'khai-vi': 0, 'bo': 1, 'ga': 2, 'heo': 3,
+          'tom-muc': 4, 'ca': 5, 'lau': 6, 'trang-mieng': 7
+        };
+        var idx = map[group];
+        if (idx !== undefined) {
+          var titles = allGroup.querySelectorAll('.groupTitle');
+          if (titles[idx]) {
+            setTimeout(function() {
+              titles[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+          }
+        }
+      }
+    });
+  });
+
+  // Back to top
+  var btn = document.getElementById('backToTop');
+  window.addEventListener('scroll', function() {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+})();
+</script>
+
+</body>
+</html>

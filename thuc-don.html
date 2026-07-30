@@ -117,6 +117,30 @@
 
     .catSection.hidden{display:none}
 
+    /* TỰ MIX THỰC ĐƠN */
+    .mixSection{padding:56px clamp(14px,5vw,72px);background:linear-gradient(180deg,#fff,var(--mint))}
+    .mixInner{width:min(920px,100%);margin:0 auto}
+    .mixHead{text-align:center;margin-bottom:28px}
+    .mixHead .heroBadge{display:inline-flex;color:var(--blue-3);background:rgba(15,90,44,.08);border:1px solid rgba(15,90,44,.18);margin-bottom:10px}
+    .mixHead h2{margin:0 0 8px;color:var(--blue-3);font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,3vw,32px);text-transform:uppercase}
+    .mixHead p{color:var(--muted);font-size:14.5px;max-width:640px;margin:0 auto}
+    .mixForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:22px}
+    .mixForm label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800;color:var(--blue-3)}
+    .mixForm select{padding:11px 12px;border:2px solid var(--line);border-radius:10px;background:#fff;font-size:14px;font-family:inherit;color:var(--ink);outline:none;transition:border-color .18s}
+    .mixForm select:focus{border-color:var(--green)}
+    .mixForm select:disabled{opacity:.55;cursor:wait}
+    .mixCalcBtn{display:flex;margin:0 auto;cursor:pointer;border:none;font-family:inherit}
+    .mixCalcBtn:disabled{opacity:.5;cursor:not-allowed}
+    .mixResult{margin-top:30px;padding:26px clamp(18px,4vw,32px);background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);text-align:center}
+    .mixPriceBox{margin-bottom:18px}
+    .mixPriceLabel{display:block;color:var(--muted);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+    .mixPrice{display:block;color:var(--blue-3);font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,4.5vw,42px);font-weight:900;margin:6px 0}
+    .mixTierNote{display:inline-block;padding:4px 14px;background:var(--mint);border-radius:99px;color:var(--blue-3);font-size:12.5px;font-weight:800}
+    .mixSummary{list-style:none;text-align:left;max-width:480px;margin:0 auto 22px;display:grid;gap:6px}
+    .mixSummary li{font-size:13.5px;color:var(--ink);padding:9px 14px;background:var(--mint);border-radius:8px}
+    .mixSummary li b{color:var(--blue-3)}
+    .mixNote{margin-top:16px;font-size:12px;color:var(--muted)}
+
     /* CTA BANNER */
     .ctaBanner{position:relative;isolation:isolate;margin-top:52px;border-radius:var(--radius);overflow:hidden;padding:clamp(28px,6vw,56px) clamp(22px,6vw,58px);color:#fff;text-align:center;background:url("assets/promo-san-vuon.jpg") center / cover no-repeat}
     .ctaBanner::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(135deg,rgba(8,40,22,.88) 0%,rgba(8,40,22,.7) 50%,rgba(8,40,22,.82) 100%)}
@@ -185,6 +209,7 @@
     <a href="index.html">Trang chủ</a>
     <a href="album-mon-an.html">Album Món Ăn</a>
     <a href="goc-bep.html">Góc Bếp</a>
+    <a href="#tu-mix">Tự Mix Menu</a>
     <a href="#khai-vi">Khai Vị</a>
     <a href="#mon-chinh-bo">Món Bò</a>
     <a href="#mon-chinh-ga">Món Gà</a>
@@ -217,6 +242,54 @@
     </div>
     <a href="thuc-don-cuoi.html">Xem 40 Thực Đơn Cưới →</a>
   </div>
+
+  <!-- TỰ MIX THỰC ĐƠN -->
+  <section class="mixSection" id="tu-mix">
+    <div class="mixInner">
+      <div class="mixHead">
+        <span class="heroBadge">🧩 Tự Mix Thực Đơn</span>
+        <h2>Tự Chọn Món – Ghép Mâm Tiệc Của Riêng Bạn</h2>
+        <p>Chọn đúng cấu trúc 1 mâm tiệc 10 người như 40 thực đơn cưới (1 Khai vị + 3 Món chính + 1 Lẩu + 1 Tráng miệng) — hệ thống tự tính giá theo đúng bộ lọc nguyên liệu của 3 mức giá hiện có.</p>
+      </div>
+
+      <div class="mixForm" id="mixForm">
+        <label>Khai vị
+          <select id="mixKV" disabled><option>Đang tải…</option></select>
+        </label>
+        <label>Món chính 1
+          <select id="mixMC1" disabled><option>Đang tải…</option></select>
+        </label>
+        <label>Món chính 2
+          <select id="mixMC2" disabled><option>Đang tải…</option></select>
+        </label>
+        <label>Món chính 3
+          <select id="mixMC3" disabled><option>Đang tải…</option></select>
+        </label>
+        <label>Lẩu
+          <select id="mixLau" disabled><option>Đang tải…</option></select>
+        </label>
+        <label>Tráng miệng
+          <select id="mixTM" disabled><option>Đang tải…</option></select>
+        </label>
+      </div>
+
+      <button class="btnGold mixCalcBtn" id="mixCalcBtn" type="button" disabled>💰 Tính giá mâm tiệc</button>
+
+      <div class="mixResult" id="mixResult" style="display:none">
+        <div class="mixPriceBox">
+          <span class="mixPriceLabel">Giá dự kiến / bàn 10 người</span>
+          <span class="mixPrice" id="mixPriceValue">0đ</span>
+          <span class="mixTierNote" id="mixTierNote"></span>
+        </div>
+        <ul class="mixSummary" id="mixSummary"></ul>
+        <div class="ctaGroup">
+          <a class="btnGold" href="tel:0965626128">☎ Gọi đặt mâm tiệc này</a>
+          <a class="btnOutline" href="https://zalo.me/0965626128" target="_blank" rel="noopener">💬 Nhắn Zalo đặt mâm này</a>
+        </div>
+        <p class="mixNote">* Giá tính tự động dựa theo nhóm nguyên liệu của 3 mức giá thực đơn cưới hiện có (2.200.000đ / 2.300.000đ / 2.400.000đ). Giá chính xác cuối cùng vui lòng liên hệ để được tư vấn và xác nhận.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- MENU BODY -->
   <main class="menuBody">
@@ -305,6 +378,22 @@
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/\u0111/g, 'd').replace(/\u0110/g, 'D')
         .trim();
+    }
+    function normLower(s) { return normKey(s).toLowerCase(); }
+
+    /* \u2500\u2500 T\u1ef0 MIX TH\u1ef0C \u0110\u01a0N: quy t\u1eafc \u0111\u1ecbnh gi\u00e1 theo nguy\u00ean li\u1ec7u \u2500\u2500
+       D\u1ef1a theo ghi ch\u00fa nguy\u00ean li\u1ec7u c\u1ee7a 3 m\u1ee9c gi\u00e1 trong 40 Th\u1ef1c \u0110\u01a1n C\u01b0\u1edbi
+       (thuc-don-cuoi.html): m\u1ee9c n\u00e0o c\u00f3 nguy\u00ean li\u1ec7u cao c\u1ea5p h\u01a1n th\u00ec t\u00ednh gi\u00e1 cao h\u01a1n. */
+    const TIER_KEYWORDS = [
+      { price: 2400000, keywords: ['bao ngu', 'gio heo', 'hau sua', 'dong trung'] },
+      { price: 2300000, keywords: ['ca mu', 'heo rung', 'ca hoi', 'bo cau'] },
+    ];
+    function classifyDishName(name) {
+      const n = normLower(name);
+      for (const tier of TIER_KEYWORDS) {
+        if (tier.keywords.some(kw => n.includes(kw))) return tier.price;
+      }
+      return 2200000;
     }
 
     /* ── NAV HIGHLIGHT khi cuộn ── */
@@ -483,13 +572,90 @@
       });
     }
 
+    /* ── TỰ MIX THỰC ĐƠN: đổ dữ liệu vào các dropdown ── */
+    function populateMixForm(data) {
+      const { categories, catOrder } = data;
+
+      let khaiViDishes = [], lauDishes = [], tmDishes = [];
+      const mainCourseGroups = [];
+
+      catOrder.forEach(key => {
+        const cat = categories[key];
+        const n = normLower(cat.label);
+        if (n === normLower('Khai Vị')) khaiViDishes = cat.dishes;
+        else if (n === normLower('Món Lẩu')) lauDishes = cat.dishes;
+        else if (n === normLower('Tráng Miệng')) tmDishes = cat.dishes;
+        else if (n.indexOf(normLower('Món Chính')) === 0) mainCourseGroups.push(cat);
+      });
+
+      function optionsHtml(dishes) {
+        return dishes.map(d => '<option value="' + escH(d.name) + '">' + escH(d.name) + '</option>').join('');
+      }
+
+      const kvSel  = document.getElementById('mixKV');
+      const lauSel = document.getElementById('mixLau');
+      const tmSel  = document.getElementById('mixTM');
+      const mcSels = [document.getElementById('mixMC1'), document.getElementById('mixMC2'), document.getElementById('mixMC3')];
+
+      kvSel.innerHTML  = optionsHtml(khaiViDishes);  kvSel.disabled  = false;
+      lauSel.innerHTML = optionsHtml(lauDishes);     lauSel.disabled = false;
+      tmSel.innerHTML  = optionsHtml(tmDishes);      tmSel.disabled  = false;
+
+      const mcOptionsHtml = mainCourseGroups.map(g =>
+        '<optgroup label="' + escH(g.label) + '">' + optionsHtml(g.dishes) + '</optgroup>'
+      ).join('');
+      mcSels.forEach((sel, idx) => {
+        sel.innerHTML = mcOptionsHtml;
+        sel.disabled = false;
+        // Gợi ý mặc định đa dạng: chọn nhóm khác nhau cho mỗi ô nếu đủ nhóm
+        if (mainCourseGroups[idx] && mainCourseGroups[idx].dishes.length) {
+          sel.value = mainCourseGroups[idx].dishes[0].name;
+        }
+      });
+
+      document.getElementById('mixCalcBtn').disabled = false;
+    }
+
+    function calcMix() {
+      const picks = [
+        { slot: 'Khai vị',        name: document.getElementById('mixKV').value },
+        { slot: 'Món chính 1',    name: document.getElementById('mixMC1').value },
+        { slot: 'Món chính 2',    name: document.getElementById('mixMC2').value },
+        { slot: 'Món chính 3',    name: document.getElementById('mixMC3').value },
+        { slot: 'Lẩu',           name: document.getElementById('mixLau').value },
+        { slot: 'Tráng miệng',   name: document.getElementById('mixTM').value },
+      ];
+
+      let finalPrice = 2200000;
+      let tierLabel = 'Phổ Thông';
+      picks.forEach(p => {
+        const price = classifyDishName(p.name);
+        if (price > finalPrice) finalPrice = price;
+      });
+      if (finalPrice === 2300000) tierLabel = 'Trung Cấp';
+      if (finalPrice === 2400000) tierLabel = 'Cao Cấp';
+
+      document.getElementById('mixPriceValue').textContent = finalPrice.toLocaleString('vi-VN') + 'đ';
+      document.getElementById('mixTierNote').textContent = 'Mức ' + tierLabel + ' / bàn 10 người';
+
+      const summaryEl = document.getElementById('mixSummary');
+      summaryEl.innerHTML = picks.map(p => '<li><b>' + escH(p.slot) + ':</b> ' + escH(p.name) + '</li>').join('');
+
+      document.getElementById('mixResult').style.display = '';
+      document.getElementById('mixResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('mixCalcBtn').addEventListener('click', calcMix);
+
     /* ── TẢI DỮ LIỆU TỪ GOOGLE SHEETS ── */
     async function loadMenu() {
       try {
         const resp = await fetch(SHEET_CSV);
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         const text = await resp.text();
-        renderMenu(buildMenu(text));
+        const data = buildMenu(text);
+        renderMenu(data);
+        populateMixForm(data);
       } catch (err) {
         console.error('Lỗi tải thực đơn:', err);
         document.getElementById('loadingWrap').style.display = 'none';
