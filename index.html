@@ -818,7 +818,6 @@
     <div class="socials" aria-label="Mạng xã hội">
       <a href="https://www.facebook.com/truong.yen.197776" aria-label="Messenger" target="_blank" rel="noopener">f</a>
       <a href="https://zalo.me/0965626128" aria-label="Zalo" target="_blank" rel="noopener">Z</a>
-      <a href="#dau-an" aria-label="Video">▶</a>
     </div>
     <span>Hotline</span>
     <span>08:00 - 20:00</span>
@@ -1064,15 +1063,15 @@
 
   <script>
     const navLinks = document.querySelectorAll('.navBar a[href^="#"]');
-    const sections = Array.from(document.querySelectorAll('main section[id]'));
+    const scrollTargets = Array.from(document.querySelectorAll('main section[id], main[id]'));
 
     function highlightNavOnScroll() {
       const scrollPos = window.scrollY + window.innerHeight * 0.35;
       let currentId = 'home';
 
-      sections.forEach(section => {
-        if (section.offsetTop <= scrollPos) {
-          currentId = section.id;
+      scrollTargets.forEach(target => {
+        if (target.offsetTop <= scrollPos) {
+          currentId = targetid;
         }
       });
 
