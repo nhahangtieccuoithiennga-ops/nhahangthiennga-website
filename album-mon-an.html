@@ -84,12 +84,12 @@
 
     /* ── PHOTO GRID ── */
     .photoGrid{
-      columns: 4;
-      column-gap: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      align-items: start;
     }
     .photoItem{
-      break-inside: avoid;
-      margin-bottom: 12px;
       border-radius: var(--r);
       overflow: hidden;
       cursor: pointer;
@@ -97,14 +97,22 @@
       background: #ddd;
       box-shadow: 0 3px 12px rgba(15,90,44,.07);
       transition: box-shadow .2s, transform .2s;
+      aspect-ratio: 4 / 3;
+      min-height: 180px;
     }
     .photoItem:hover{ box-shadow: 0 10px 28px rgba(15,90,44,.16); transform: translateY(-2px); }
     .photoItem img{
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      aspect-ratio: 4 / 3;
       transition: transform .35s;
+      background: linear-gradient(180deg,#f4f6ef,#e8efe1);
+      image-rendering: auto;
     }
+    .photoItem img[loading="lazy"]{content-visibility:auto}
     .photoItem:hover img{ transform: scale(1.04); }
     .photoOverlay{
       position: absolute;
@@ -313,10 +321,17 @@
     .floatC a:nth-child(3){background:var(--blue-3);font-size:21px}
 
     /* ── RESPONSIVE ── */
-    @media(max-width:1100px){.photoGrid{columns:3}}
-    @media(max-width:760px){.photoGrid{columns:2}.masthead{grid-template-columns:1fr 1fr}.brand{display:none}}
+    @media(max-width:1100px){
+      .photoGrid{grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));}
+    }
+    @media(max-width:760px){
+      .photoGrid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+      .masthead{grid-template-columns:1fr 1fr}
+      .brand{display:none}
+    }
     @media(max-width:480px){
-      .photoGrid{columns:2}
+      .photoGrid{grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px}
+      .photoItem{min-height:150px}
       .topBar{justify-content:flex-start}
       .floatC{left:10px;right:10px;top:auto;bottom:10px;grid-template-columns:repeat(3,1fr);transform:none}
       .floatC a{width:auto;height:44px;border-radius:6px}
@@ -610,7 +625,11 @@ async function loadAlbum(url) {
     const res  = await fetch(url);
     const json = await res.json();
     if (!json.ok) throw new Error(json.error || 'Lỗi không xác định');
-    ALL_PHOTOS = json.data || [];
+    ALL_PHOTOS = (json.data || []).sort((a, b) => {
+      const catCmp = String(a.cat || '').localeCompare(String(b.cat || ''), 'vi', { sensitivity: 'base' });
+      if (catCmp !== 0) return catCmp;
+      return String(a.name || '').localeCompare(String(b.name || ''), 'vi', { sensitivity: 'base' });
+    });
     document.getElementById('skeletonWrap').style.display = 'none';
     buildUI();
   } catch (err) {
@@ -626,7 +645,7 @@ async function loadAlbum(url) {
 ══════════════════════════════════════════════ */
 function buildUI() {
   // Thống kê
-  const cats = [...new Set(ALL_PHOTOS.map(p => p.cat))];
+  const cats = [...new Set(ALL_PHOTOS.map(p => p.cat))].sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
   document.getElementById('totalCount').textContent = ALL_PHOTOS.length;
   document.getElementById('catCount').textContent   = cats.length;
   document.getElementById('statBar').style.display  = '';
@@ -670,6 +689,10 @@ function renderGrid() {
     const catMatch  = ACTIVE_CAT === '__all__' || p.cat === ACTIVE_CAT;
     const nameMatch = !SEARCH_Q || p.name.toLowerCase().includes(SEARCH_Q);
     return catMatch && nameMatch;
+  }).sort((a, b) => {
+    const catCmp = String(a.cat || '').localeCompare(String(b.cat || ''), 'vi', { sensitivity: 'base' });
+    if (catCmp !== 0) return catCmp;
+    return String(a.name || '').localeCompare(String(b.name || ''), 'vi', { sensitivity: 'base' });
   });
 
   const grid    = document.getElementById('photoGrid');
@@ -686,11 +709,11 @@ function renderGrid() {
   grid.innerHTML = '';
 
   VISIBLE.forEach((photo, idx) => {
-    const thumb = `https://drive.google.com/thumbnail?id=${photo.id}&sz=w480`;
+    const thumb = `https://drive.google.com/uc?export=view&id=${photo.id}`;
     const item = document.createElement('div');
     item.className = 'photoItem';
     item.innerHTML = `
-      <img src="${thumb}" alt="${esc(photo.name)}" loading="lazy">
+      <img src="${thumb}" alt="${esc(photo.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=${photo.id}&sz=w480';">
       <div class="photoOverlay">
         <div class="photoName">${esc(photo.name)}</div>
         <span class="photoCat">${esc(photo.cat)}</span>
@@ -712,9 +735,13 @@ function openLightbox(idx) {
 
 function showLbPhoto() {
   const photo = VISIBLE[LB_INDEX];
-  const full  = `https://drive.google.com/thumbnail?id=${photo.id}&sz=w1200`;
-  document.getElementById('lbImg').src      = full;
-  document.getElementById('lbImg').alt      = photo.name;
+  const full  = `https://drive.google.com/uc?export=view&id=${photo.id}`;
+  const lbImg = document.getElementById('lbImg');
+  lbImg.src = full;
+  lbImg.alt = photo.name;
+  lbImg.onerror = () => {
+    lbImg.src = `https://drive.google.com/thumbnail?id=${photo.id}&sz=w1200`;
+  };
   document.getElementById('lbName').textContent = photo.name;
   document.getElementById('lbCat').textContent  = photo.cat;
   document.getElementById('lbCounter').textContent = `${LB_INDEX + 1} / ${VISIBLE.length}`;
