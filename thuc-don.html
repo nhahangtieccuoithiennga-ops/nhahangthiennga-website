@@ -360,6 +360,7 @@
   <script>
     /* ── CONFIG ── */
     const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1WkP7XRqwFiftOJTkd9R4I5Ttj5xoeDAs84UBAAcl3_0/export?format=csv&gid=0';
+    const MENU_FALLBACK_MD = 'data/products/thuc-don-mon-le.md';
 
     /* ── DANH MỤC – thứ tự và meta hiển thị ── */
     const CAT_META = {
@@ -499,6 +500,39 @@
           catOrder.push(key);
         }
         categories[key].dishes.push({ stt: parseInt(stt), name, desc });
+      });
+
+      return { categories, catOrder };
+    }
+
+    function buildMenuFromMarkdown(mdText) {
+      const categories = {};
+      const catOrder = [];
+      let currentCat = null;
+      let currentIndex = 0;
+
+      const lines = mdText.split(/\r?\n/);
+      lines.forEach(line => {
+        const mHeading = line.match(/^##\s+(.+?)\s*\((\d+)\s*món\)$/i);
+        if (mHeading) {
+          currentCat = mHeading[1].trim();
+          const key = normKey(currentCat);
+          if (!categories[key]) {
+            categories[key] = { label: currentCat, dishes: [] };
+            catOrder.push(key);
+          }
+          currentIndex = 0;
+          return;
+        }
+
+        const mDish = line.match(/^-\s*\*\*(.+?)\*\*\s*—\s*(.+)$/);
+        if (mDish && currentCat) {
+          currentIndex += 1;
+          const name = mDish[1].trim();
+          const desc = mDish[2].trim();
+          const key = normKey(currentCat);
+          categories[key].dishes.push({ stt: currentIndex, name, desc });
+        }
       });
 
       return { categories, catOrder };
@@ -687,19 +721,30 @@
 
     document.getElementById('mixCalcBtn').addEventListener('click', calcMix);
 
-    /* ── TẢI DỮ LIỆU TỪ GOOGLE SHEETS ── */
+    /* ── TẢI DỮ LIỆU THỰC ĐƠN ── */
     async function loadMenu() {
       try {
         const resp = await fetch(SHEET_CSV);
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         const text = await resp.text();
         const data = buildMenu(text);
+        if (!data.catOrder.length) throw new Error('Empty sheet data');
         renderMenu(data);
         populateMixForm(data);
       } catch (err) {
-        console.error('Lỗi tải thực đơn:', err);
-        document.getElementById('loadingWrap').style.display = 'none';
-        document.getElementById('errorBox').style.display = '';
+        console.warn('Google Sheet lỗi, chuyển sang dữ liệu dự phòng local:', err);
+        try {
+          const fallbackResp = await fetch(MENU_FALLBACK_MD);
+          if (!fallbackResp.ok) throw new Error('HTTP ' + fallbackResp.status);
+          const mdText = await fallbackResp.text();
+          const data = buildMenuFromMarkdown(mdText);
+          renderMenu(data);
+          populateMixForm(data);
+        } catch (fallbackErr) {
+          console.error('Lỗi tải thực đơn:', fallbackErr);
+          document.getElementById('loadingWrap').style.display = 'none';
+          document.getElementById('errorBox').style.display = '';
+        }
       }
     }
 
