@@ -54,6 +54,8 @@
     .navBar::-webkit-scrollbar{display:none}
     .navBar a{display:inline-flex;align-items:center;min-height:46px;border-bottom:3px solid transparent;font-size:14.5px;font-weight:800;white-space:nowrap;transition:color .15s,border-color .15s}
     .navBar a:hover,.navBar a.active{border-bottom-color:var(--gold);color:var(--gold)}
+    .navBar a.navHighlight{background:linear-gradient(135deg,#f1cf73,#b88a34);color:var(--blue-3);padding:0 16px;margin:8px 0;border-radius:99px;border-bottom-color:transparent;font-weight:900;box-shadow:0 3px 10px rgba(184,138,52,.4)}
+    .navBar a.navHighlight:hover{color:var(--blue-3);border-bottom-color:transparent;filter:brightness(1.06)}
 
     /* HERO */
     .hero{position:relative;isolation:isolate;display:grid;place-items:center;min-height:clamp(300px,38vw,420px);padding:36px 16px;color:#fff;text-align:center;overflow:hidden}
@@ -209,7 +211,7 @@
     <a href="index.html">Trang chủ</a>
     <a href="album-mon-an.html">Album Món Ăn</a>
     <a href="goc-bep.html">Góc Bếp</a>
-    <a href="#tu-mix">Tự Mix Menu</a>
+    <a href="#tu-mix" class="navHighlight">🧩 Tự Mix Menu Theo Ý Thích</a>
     <a href="#khai-vi">Khai Vị</a>
     <a href="#mon-chinh-bo">Món Bò</a>
     <a href="#mon-chinh-ga">Món Gà</a>
