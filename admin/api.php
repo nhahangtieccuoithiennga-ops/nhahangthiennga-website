@@ -111,7 +111,17 @@ try {
 
         if ($action === 'orders') {
             $rows = [];
-            $result = $conn->query("SELECT o.id, o.order_id, c.name AS customer_name, p.name AS product_name, o.amount, o.status, o.payment_status, o.payment_url, o.purchased_at
+            $result = $conn->query("SELECT o.id,
+                COALESCE(o.order_id, 'TN-' || printf('%06d', o.id)) AS order_id,
+                c.name AS customer_name,
+                p.name AS product_name,
+                o.amount,
+                o.status,
+                CASE WHEN o.payment_status IS NOT NULL THEN o.payment_status
+                     WHEN o.status = 'success' THEN 'paid'
+                     ELSE 'pending' END AS payment_status,
+                COALESCE(o.payment_url, 'https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=' || CAST(COALESCE(o.amount, 0) AS INTEGER) || '&des=' || COALESCE(o.order_id, 'TN-' || printf('%06d', o.id))) AS payment_url,
+                o.purchased_at
                 FROM orders o
                 LEFT JOIN customers c ON c.id = o.customer_id
                 LEFT JOIN products p ON p.id = o.product_id
