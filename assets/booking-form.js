@@ -223,26 +223,40 @@
         '</div>';
     }
 
-    if (!APPS_SCRIPT_URL) {
-      // Chưa cấu hình Sheet: vẫn báo đã ghi nhận, khuyến khích gọi/Zalo song song để chắc chắn
-      showSuccess();
-      return;
-    }
-
     submitBtn.disabled = true;
     submitBtn.textContent = "Đang gửi...";
 
-    var formBody = new URLSearchParams(data).toString();
-    fetch(APPS_SCRIPT_URL, {
+    fetch("/admin/api.php?action=booking", {
       method: "POST",
-      mode: "no-cors", // Apps Script Web App không trả CORS header đọc được, nhưng request vẫn tới nơi
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formBody
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(function (response) {
+      return response.json().catch(function () {
+        return {};
+      }).then(function (payload) {
+        if (!response.ok || payload.error) {
+          throw new Error(payload.error || "Không thể lưu booking");
+        }
+        return payload;
+      });
     }).then(function () {
       showSuccess();
     }).catch(function (err) {
       console.error("Lỗi gửi form khảo sát:", err);
-      showSuccess(); // vẫn báo thành công cho khách, tránh khách hoang mang; log lỗi để kiểm tra sau
+      if (APPS_SCRIPT_URL) {
+        var formBody = new URLSearchParams(data).toString();
+        return fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formBody
+        }).then(function () {
+          showSuccess();
+        }).catch(function () {
+          showSuccess();
+        });
+      }
+      showSuccess();
     });
   });
 })();

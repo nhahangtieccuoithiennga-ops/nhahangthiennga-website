@@ -31,6 +31,10 @@
     .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
     .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: 0 8px 24px rgba(15, 90, 44, 0.08); }
     .panel.hidden { display: none; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .stat-card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; box-shadow: 0 8px 24px rgba(15, 90, 44, 0.06); }
+    .stat-card .label { font-size: 12px; color: var(--muted); font-weight: 800; text-transform: uppercase; }
+    .stat-card .value { font-size: 24px; font-weight: 900; color: var(--blue-2); margin-top: 8px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     .field label { font-size: 12px; font-weight: 800; color: var(--blue-2); }
@@ -59,6 +63,12 @@
         <div class="small">Demo nhanh: quản lý sản phẩm, khách hàng và đơn hàng — không cần đăng nhập.</div>
       </div>
       <div class="tag">Local demo</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="label">Sản phẩm</div><div class="value" id="statProducts">0</div></div>
+      <div class="stat-card"><div class="label">Khách hàng</div><div class="value" id="statCustomers">0</div></div>
+      <div class="stat-card"><div class="label">Đơn hàng</div><div class="value" id="statOrders">0</div></div>
     </div>
 
     <div class="tabs">
@@ -231,6 +241,10 @@
         products = await api('products');
         customers = await api('customers');
         orders = await api('orders');
+        const stats = await api('stats');
+        document.getElementById('statProducts').textContent = stats.products ?? products.length;
+        document.getElementById('statCustomers').textContent = stats.customers ?? customers.length;
+        document.getElementById('statOrders').textContent = stats.orders ?? orders.length;
         renderAll();
       } catch (error) {
         alert(error.message);

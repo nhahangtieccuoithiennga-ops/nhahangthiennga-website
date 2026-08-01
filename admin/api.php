@@ -95,6 +95,17 @@ try {
             sendJson($rows);
         }
 
+        if ($action === 'stats') {
+            $productsCount = (int)$conn->querySingle("SELECT COUNT(*) FROM products");
+            $customersCount = (int)$conn->querySingle("SELECT COUNT(*) FROM customers");
+            $ordersCount = (int)$conn->querySingle("SELECT COUNT(*) FROM orders");
+            sendJson([
+                'products' => $productsCount,
+                'customers' => $customersCount,
+                'orders' => $ordersCount
+            ]);
+        }
+
         sendJson(['error' => 'Missing action'], 400);
     }
 
@@ -158,6 +169,44 @@ try {
             $stmt->bindValue(':purchased_at', $date, SQLITE3_TEXT);
             $stmt->execute();
             sendJson(['ok' => true]);
+        }
+
+        if ($action === 'booking') {
+            $name = trim((string)($body['hoTen'] ?? ''));
+            $phone = trim((string)($body['soDienThoai'] ?? ''));
+            $date = trim((string)($body['ngayDuKien'] ?? '')) ?: date('Y-m-d');
+            $note = trim((string)($body['ghiChu'] ?? ''));
+            $source = trim((string)($body['trang'] ?? ''));
+
+            if ($name === '' || $phone === '') {
+                sendJson(['error' => 'Tên và số điện thoại là bắt buộc'], 400);
+            }
+
+            $existingCustomer = $conn->querySingle("SELECT id FROM customers WHERE phone = '{$phone}'", true);
+            $customerId = 0;
+
+            if ($existingCustomer) {
+                $customerId = (int)$existingCustomer['id'];
+            } else {
+                $stmt = $conn->prepare("INSERT INTO customers (name, phone, zalo, registered_at) VALUES (:name, :phone, :zalo, :registered_at)");
+                $stmt->bindValue(':name', $name, SQLITE3_TEXT);
+                $stmt->bindValue(':phone', $phone, SQLITE3_TEXT);
+                $stmt->bindValue(':zalo', $phone, SQLITE3_TEXT);
+                $stmt->bindValue(':registered_at', $date, SQLITE3_TEXT);
+                $stmt->execute();
+                $customerId = (int)$conn->lastInsertRowId();
+            }
+
+            $defaultProductId = (int)$conn->querySingle("SELECT id FROM products ORDER BY id LIMIT 1");
+            $stmt = $conn->prepare("INSERT INTO orders (customer_id, product_id, amount, status, purchased_at) VALUES (:customer_id, :product_id, :amount, :status, :purchased_at)");
+            $stmt->bindValue(':customer_id', $customerId, SQLITE3_INTEGER);
+            $stmt->bindValue(':product_id', $defaultProductId ?: 1, SQLITE3_INTEGER);
+            $stmt->bindValue(':amount', 0, SQLITE3_FLOAT);
+            $stmt->bindValue(':status', 'pending', SQLITE3_TEXT);
+            $stmt->bindValue(':purchased_at', $date, SQLITE3_TEXT);
+            $stmt->execute();
+
+            sendJson(['ok' => true, 'customer_id' => $customerId, 'source' => $source, 'note' => $note]);
         }
 
         sendJson(['error' => 'Missing action'], 400);
