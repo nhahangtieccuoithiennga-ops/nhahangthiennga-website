@@ -53,6 +53,8 @@
     .navBar::-webkit-scrollbar{display:none}
     .navBar a{display:inline-flex;align-items:center;min-height:44px;border-bottom:3px solid transparent;font-size:14px;font-weight:800;white-space:nowrap;transition:color .15s,border-color .15s}
     .navBar a:hover,.navBar a.act{border-bottom-color:var(--gold);color:var(--gold)}
+    .navBar a.navHighlight{background:linear-gradient(135deg,#f1cf73,#b88a34);color:var(--blue-3);padding:0 16px;margin:8px 0;border-radius:99px;border-bottom-color:transparent;font-weight:900;box-shadow:0 3px 10px rgba(184,138,52,.4)}
+    .navBar a.navHighlight:hover{color:var(--blue-3);border-bottom-color:transparent;filter:brightness(1.06)}
 
     /* ── HERO ── */
     .hero{position:relative;isolation:isolate;display:grid;place-items:center;min-height:clamp(260px,32vw,360px);padding:32px 16px;color:#fff;text-align:center;overflow:hidden}
@@ -160,6 +162,8 @@
     @media(max-width:640px){
       .topBar{justify-content:flex-start}
       .masthead{grid-template-columns:1fr 1fr;padding:12px 14px}
+      .navBar{flex-wrap:wrap;overflow-x:visible;gap:4px 10px;padding:8px 10px;min-height:auto}
+      .navBar a{min-height:32px;font-size:13px}
       .blogGrid{grid-template-columns:1fr}
       .floatContact{left:10px;right:10px;top:auto;bottom:10px;grid-template-columns:repeat(3,1fr);transform:none}
       .floatContact a{width:auto;height:46px;border-radius:6px}
@@ -196,7 +200,7 @@
 
   <!-- NAV -->
   <nav class="navBar" aria-label="Điều hướng Góc Bếp">
-    <a href="index.html">Trang chủ</a>
+    <a href="index.html" class="navHighlight">🏠 Trang chủ</a>
     <a href="thuc-don.html">Thực đơn</a>
     <a href="thuc-don-cuoi.html">Thực Đơn Cưới</a>
     <a href="album-mon-an.html">Album Món Ăn</a>
@@ -543,5 +547,6 @@
   </script>
   <script src="assets/chatbot-data.js"></script>
   <script src="assets/chatbot-widget.js"></script>
+  <script src="assets/booking-form.js"></script>
 </body>
 </html>

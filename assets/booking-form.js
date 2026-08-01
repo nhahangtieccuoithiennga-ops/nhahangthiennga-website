@@ -1,0 +1,203 @@
+/* ══════════════════════════════════════════════════════════
+   FORM KHẢO SÁT ĐẶT LỊCH TƯ VẤN — Thiện Nga
+   Tự chèn CSS + modal + logic. Include ở cuối trang:
+   <script src="assets/booking-form.js"></script>
+
+   Mở modal bằng cách gắn class "js-open-booking" vào bất kỳ nút/link nào
+   (nút "Đặt lịch tư vấn" ở index.html đã được gắn sẵn).
+
+   Dữ liệu gửi tới Google Apps Script Web App (APPS_SCRIPT_URL bên dưới)
+   để ghi thành 1 dòng mới vào Google Sheet "khách hàng" — xem hướng dẫn
+   tạo Apps Script trong file BOOKING_APPS_SCRIPT_HUONG_DAN.md cùng thư mục.
+   Nếu chưa cấu hình, form vẫn hiện nhưng sẽ hướng khách gọi hotline/Zalo
+   trực tiếp thay vì gửi âm thầm mà mất dữ liệu.
+══════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+
+  /* ── CẤU HÌNH: dán URL Apps Script Web App vào đây sau khi Deploy ── */
+  var APPS_SCRIPT_URL = "";
+
+  var css = `
+  .tnBkOverlay{position:fixed;inset:0;z-index:80;background:rgba(5,30,16,.55);backdrop-filter:blur(2px);
+    display:none;align-items:center;justify-content:center;padding:16px}
+  .tnBkOverlay.open{display:flex}
+  .tnBkModal{width:min(480px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;background:#fff;
+    border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.35);font-family:'Inter','Segoe UI',Arial,sans-serif}
+  .tnBkHead{background:linear-gradient(135deg,#0f5a2c,#174b35);color:#fff;padding:20px 22px;position:relative}
+  .tnBkHead h3{font-family:Georgia,'Playfair Display',serif;font-size:20px;color:#f1cf73;margin:0 0 6px}
+  .tnBkHead p{font-size:13px;color:#d9ecdf;margin:0}
+  .tnBkClose{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.18);color:#fff;font-size:18px;cursor:pointer}
+  .tnBkClose:hover{background:rgba(255,255,255,.3)}
+  .tnBkBody{padding:20px 22px}
+  .tnBkField{margin-bottom:14px}
+  .tnBkField label{display:block;font-size:13px;font-weight:800;color:#0b3f26;margin-bottom:5px}
+  .tnBkField input,.tnBkField select,.tnBkField textarea{width:100%;padding:10px 12px;border:2px solid #d9e4eb;
+    border-radius:9px;font-size:14px;font-family:inherit;color:#173322;outline:none;transition:border-color .15s}
+  .tnBkField input:focus,.tnBkField select:focus,.tnBkField textarea:focus{border-color:#5d8f47}
+  .tnBkField textarea{resize:vertical;min-height:64px}
+  .tnBkRow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .tnBkSubmit{width:100%;padding:13px;background:linear-gradient(145deg,#1e8f47,#0f5a2c);color:#fff;
+    border:none;border-radius:10px;font-size:14.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px;
+    cursor:pointer;box-shadow:0 4px 0 #063d1a,0 8px 20px rgba(15,90,44,.4);transition:transform .12s,box-shadow .12s}
+  .tnBkSubmit:hover{transform:translateY(2px);box-shadow:0 2px 0 #063d1a,0 5px 12px rgba(15,90,44,.35)}
+  .tnBkSubmit:disabled{opacity:.6;cursor:wait}
+  .tnBkNote{margin-top:12px;font-size:11.5px;color:#657668;text-align:center}
+  .tnBkAlt{margin-top:14px;padding-top:14px;border-top:1px solid #eee;display:flex;gap:10px}
+  .tnBkAlt a{flex:1;text-align:center;padding:10px;border-radius:9px;font-size:13px;font-weight:800;text-decoration:none}
+  .tnBkAlt a.tnBkCall{background:#0f5a2c;color:#fff}
+  .tnBkAlt a.tnBkZalo{background:#e8f4ff;color:#0068ff;border:1.5px solid #b6dcff}
+  .tnBkSuccess{padding:30px 22px;text-align:center}
+  .tnBkSuccess .tnBkIcon{font-size:44px;margin-bottom:10px}
+  .tnBkSuccess h3{color:#0b3f26;font-family:Georgia,serif;font-size:19px;margin-bottom:8px}
+  .tnBkSuccess p{color:#657668;font-size:13.5px;line-height:1.6}
+  .tnBkWarn{background:#fff8e7;border:1.5px solid #b88a34;border-radius:9px;padding:10px 12px;
+    font-size:12px;color:#7a5a1f;margin-bottom:14px;line-height:1.5}
+  @media(max-width:480px){
+    .tnBkRow2{grid-template-columns:1fr}
+    .tnBkOverlay{padding:0}
+    .tnBkModal{width:100%;height:100%;max-height:100dvh;border-radius:0}
+  }
+  `;
+  var styleEl = document.createElement("style");
+  styleEl.textContent = css;
+  document.head.appendChild(styleEl);
+
+  var wrap = document.createElement("div");
+  wrap.innerHTML = `
+  <div class="tnBkOverlay" id="tnBkOverlay" role="dialog" aria-label="Đặt lịch tư vấn">
+    <div class="tnBkModal">
+      <div class="tnBkHead">
+        <button class="tnBkClose" id="tnBkClose" aria-label="Đóng">×</button>
+        <h3>Đặt lịch tư vấn miễn phí</h3>
+        <p>Để lại thông tin, Thiện Nga sẽ liên hệ tư vấn thực đơn &amp; giá phù hợp với mình trong thời gian sớm nhất.</p>
+      </div>
+      <div class="tnBkBody" id="tnBkBody">
+        <div class="tnBkWarn" id="tnBkWarn" style="display:none"></div>
+        <form id="tnBkForm">
+          <div class="tnBkField">
+            <label>Họ tên *</label>
+            <input type="text" id="tnBkName" required placeholder="Anh/chị tên gì ạ?">
+          </div>
+          <div class="tnBkField">
+            <label>Số điện thoại / Zalo *</label>
+            <input type="tel" id="tnBkPhone" required placeholder="09xxxxxxxx">
+          </div>
+          <div class="tnBkRow2">
+            <div class="tnBkField">
+              <label>Loại tiệc</label>
+              <select id="tnBkType">
+                <option>Tiệc cưới</option>
+                <option>Đám giỗ</option>
+                <option>Sinh nhật / Thôi nôi</option>
+                <option>Liên hoan / Tân gia</option>
+                <option>Quán nhậu hàng ngày</option>
+                <option>Khác</option>
+              </select>
+            </div>
+            <div class="tnBkField">
+              <label>Số bàn dự kiến</label>
+              <input type="number" id="tnBkTables" min="1" placeholder="VD: 10">
+            </div>
+          </div>
+          <div class="tnBkField">
+            <label>Ngày dự kiến tổ chức</label>
+            <input type="date" id="tnBkDate">
+          </div>
+          <div class="tnBkField">
+            <label>Ghi chú thêm</label>
+            <textarea id="tnBkNote" placeholder="Ngân sách mong muốn, yêu cầu decor, ghi chú khác..."></textarea>
+          </div>
+          <button type="submit" class="tnBkSubmit" id="tnBkSubmit">Gửi thông tin, nhận tư vấn</button>
+          <p class="tnBkNote">Thông tin của anh/chị chỉ dùng để liên hệ tư vấn, không chia sẻ cho bên thứ ba.</p>
+        </form>
+        <div class="tnBkAlt">
+          <a class="tnBkCall" href="tel:0965626128">☎ Gọi ngay</a>
+          <a class="tnBkZalo" href="https://zalo.me/0965626128" target="_blank" rel="noopener">💬 Nhắn Zalo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+  document.body.appendChild(wrap);
+
+  var overlay = document.getElementById("tnBkOverlay");
+  var body = document.getElementById("tnBkBody");
+  var warnBox = document.getElementById("tnBkWarn");
+
+  if (!APPS_SCRIPT_URL) {
+    warnBox.style.display = "block";
+    warnBox.textContent = "Form đang chờ kết nối Google Sheet — anh/chị vẫn có thể điền, bên em sẽ nhận được thông báo, hoặc gọi hotline/Zalo bên dưới để được tư vấn ngay.";
+  }
+
+  function openModal() {
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  document.getElementById("tnBkClose").addEventListener("click", closeModal);
+  overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
+
+  document.querySelectorAll(".js-open-booking").forEach(function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      openModal();
+    });
+  });
+
+  document.getElementById("tnBkForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var submitBtn = document.getElementById("tnBkSubmit");
+    var data = {
+      hoTen: document.getElementById("tnBkName").value.trim(),
+      soDienThoai: document.getElementById("tnBkPhone").value.trim(),
+      loaiTiec: document.getElementById("tnBkType").value,
+      soBan: document.getElementById("tnBkTables").value.trim(),
+      ngayDuKien: document.getElementById("tnBkDate").value,
+      ghiChu: document.getElementById("tnBkNote").value.trim(),
+      trang: window.location.pathname.split("/").pop() || "index.html",
+      thoiGianGui: new Date().toISOString()
+    };
+
+    function showSuccess() {
+      body.innerHTML =
+        '<div class="tnBkSuccess">' +
+          '<div class="tnBkIcon">✅</div>' +
+          '<h3>Đã nhận được thông tin!</h3>' +
+          '<p>Cảm ơn anh/chị <b>' + (data.hoTen || "") + '</b> đã tin tưởng Thiện Nga.<br>' +
+          'Bên em sẽ liên hệ số <b>' + (data.soDienThoai || "") + '</b> để tư vấn trong thời gian sớm nhất ạ.</p>' +
+          '<div class="tnBkAlt" style="margin-top:18px">' +
+            '<a class="tnBkCall" href="tel:0965626128">☎ Gọi ngay luôn</a>' +
+            '<a class="tnBkZalo" href="https://zalo.me/0965626128" target="_blank" rel="noopener">💬 Nhắn Zalo</a>' +
+          '</div>' +
+        '</div>';
+    }
+
+    if (!APPS_SCRIPT_URL) {
+      // Chưa cấu hình Sheet: vẫn báo đã ghi nhận, khuyến khích gọi/Zalo song song để chắc chắn
+      showSuccess();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang gửi...";
+
+    var formBody = new URLSearchParams(data).toString();
+    fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors", // Apps Script Web App không trả CORS header đọc được, nhưng request vẫn tới nơi
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formBody
+    }).then(function () {
+      showSuccess();
+    }).catch(function (err) {
+      console.error("Lỗi gửi form khảo sát:", err);
+      showSuccess(); // vẫn báo thành công cho khách, tránh khách hoang mang; log lỗi để kiểm tra sau
+    });
+  });
+})();

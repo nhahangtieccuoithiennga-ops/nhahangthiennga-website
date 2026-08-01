@@ -750,12 +750,14 @@
       }
       .quickBook { justify-self: center; }
       .navBar {
-        justify-content: flex-start;
-        overflow-x: auto;
-        scrollbar-width: none;
+        justify-content: center;
+        flex-wrap: wrap;
+        overflow-x: visible;
+        gap: 6px 14px;
+        padding: 8px 10px;
+        min-height: auto;
       }
-      .navBar::-webkit-scrollbar { display: none; }
-      .navBar a { white-space: nowrap; }
+      .navBar a { white-space: nowrap; min-height: 34px; font-size: 14px; }
       .hero { min-height: 520px; }
       .split, .contactGrid { grid-template-columns: 1fr; }
       .serviceGrid, .foodGrid, .blogGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -831,7 +833,7 @@
       <b>Thiện Nga</b>
       <small>Wedding & Catering</small>
     </a>
-    <a class="quickBook" href="#lien-he">Đặt lịch tư vấn</a>
+    <a class="quickBook js-open-booking" href="#lien-he">Đặt lịch tư vấn</a>
   </header>
 
   <nav class="navBar" aria-label="Điều hướng chính">
@@ -1086,5 +1088,6 @@
   </script>
   <script src="assets/chatbot-data.js"></script>
   <script src="assets/chatbot-widget.js"></script>
+  <script src="assets/booking-form.js"></script>
 </body>
 </html>

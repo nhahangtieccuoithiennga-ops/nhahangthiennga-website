@@ -171,6 +171,8 @@
     @media(max-width:640px){
       .topBar{justify-content:flex-start}
       .masthead{grid-template-columns:1fr 1fr;padding:12px 14px}
+      .navBar{flex-wrap:wrap;overflow-x:visible;gap:4px 10px;padding:8px 10px;min-height:auto}
+      .navBar a{min-height:32px;font-size:13px}
       .dishGrid{grid-template-columns:1fr}
       .weddingPromo{flex-direction:column}
       .floatContact{left:10px;right:10px;top:auto;bottom:10px;grid-template-columns:repeat(3,1fr);transform:none}
@@ -208,7 +210,7 @@
 
   <!-- NAV BAR -->
   <nav class="navBar" aria-label="Điều hướng thực đơn">
-    <a href="index.html">Trang chủ</a>
+    <a href="index.html" class="navHighlight">🏠 Trang chủ</a>
     <a href="album-mon-an.html">Album Món Ăn</a>
     <a href="goc-bep.html">Góc Bếp</a>
     <a href="#tu-mix" class="navHighlight">🧩 Tự Mix Menu Theo Ý Thích</a>
@@ -752,5 +754,6 @@
   </script>
   <script src="assets/chatbot-data.js"></script>
   <script src="assets/chatbot-widget.js"></script>
+  <script src="assets/booking-form.js"></script>
 </body>
 </html>

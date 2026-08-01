@@ -3,10 +3,20 @@
    Tự chèn CSS + HTML + logic. Chỉ cần include sau chatbot-data.js:
    <script src="assets/chatbot-data.js"></script>
    <script src="assets/chatbot-widget.js"></script>
-   Dùng đúng nội dung sales_script.md + 191 FAQ thật (chatbot-data.js)
+
+   NGUỒN CÂU HỎI: ưu tiên đọc từ Google Sheet (SHEET_CSV bên dưới) để
+   chủ quán tự thêm/sửa/xoá câu hỏi không cần sửa code. Nếu chưa cấu
+   hình hoặc tải Sheet lỗi, tự dùng danh sách dự phòng trong
+   chatbot-data.js (166 câu có sẵn) để chatbot vẫn hoạt động bình thường.
+
+   Cấu trúc cột Sheet (đúng theo file website/data/chatbot_faq_import.csv):
+   STT | Nhom | Cau hoi chinh | Bien the (cach nhau bang ; ) | Cau tra loi | Tag
 ══════════════════════════════════════════════════════════ */
 (function () {
   "use strict";
+
+  /* ── CẤU HÌNH: dán link CSV Google Sheet vào đây sau khi "Xuất bản lên web" ── */
+  var SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpj_lQeSqkmyV9AE81T3-H905KhMV7Hl0hNziZfNbTk9vTy85ChSXp7CylLX8XN25gXKZNQbkdnEtW/pub?gid=109661417&single=true&output=csv";
 
   /* ── CSS ── */
   var css = `
@@ -59,9 +69,19 @@
   .tnTyping span:nth-child(2){animation-delay:.2s}
   .tnTyping span:nth-child(3){animation-delay:.4s}
   @keyframes tnBlink{0%,80%,100%{opacity:.3}40%{opacity:1}}
-  @media(max-width:480px){
-    .tnChatBtn{right:14px;bottom:70px}
-    .tnChatPanel{right:8px;left:8px;width:auto;bottom:140px;height:min(480px,calc(100vh - 190px))}
+  @media(max-width:640px){
+    .tnChatBtn{right:14px;bottom:76px}
+    /* Mobile: chat mở toàn màn hình để bàn phím ảo không đẩy vỡ layout, nút gửi luôn bấm được */
+    .tnChatPanel{
+      left:0;right:0;top:0;bottom:0;
+      width:100%;height:100%;height:100dvh;
+      border-radius:0;
+    }
+    .tnChatHead{padding-top:calc(14px + env(safe-area-inset-top,0px))}
+    .tnChatFoot{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+    .tnChatFoot input{font-size:16px}
+    body.tnChatOpenMobile{overflow:hidden}
+    body.tnChatOpenMobile .floatContact,body.tnChatOpenMobile .floatC{display:none !important}
   }
   `;
   var styleEl = document.createElement("style");
@@ -116,10 +136,71 @@
   var QUICK = (typeof CHATBOT_QUICK_REPLIES !== "undefined") ? CHATBOT_QUICK_REPLIES : [];
 
   /* Tiền xử lý: token hoá q+variants+tag cho từng FAQ để so khớp nhanh */
-  FAQ.forEach(function (item) {
-    var bag = [item.q].concat(item.v || []).join(" ") + " " + (item.tag || "").replace(/_/g, " ");
-    item._norm = normKey(bag);
-  });
+  function indexFaq(list) {
+    list.forEach(function (item) {
+      var bag = [item.q].concat(item.v || []).join(" ") + " " + (item.tag || "").replace(/_/g, " ");
+      item._norm = normKey(bag);
+    });
+    return list;
+  }
+  indexFaq(FAQ);
+
+  /* ── PARSE CSV (giống thuc-don.html/goc-bep.html) ── */
+  function parseCSV(text) {
+    var rows = [], i = 0;
+    while (i < text.length) {
+      var row = [];
+      while (i < text.length && text[i] !== "\n") {
+        if (text[i] === '"') {
+          var cell = ""; i++;
+          while (i < text.length) {
+            if (text[i] === '"' && text[i + 1] === '"') { cell += '"'; i += 2; }
+            else if (text[i] === '"') { i++; break; }
+            else { cell += text[i++]; }
+          }
+          row.push(cell);
+        } else {
+          var c = "";
+          while (i < text.length && text[i] !== "," && text[i] !== "\n") c += text[i++];
+          row.push(c.trim());
+        }
+        if (i < text.length && text[i] === ",") i++;
+      }
+      if (i < text.length && text[i] === "\n") i++;
+      if (row.some(function (c) { return c !== ""; })) rows.push(row);
+    }
+    return rows;
+  }
+
+  /* Cột: STT, Nhom, Cau hoi chinh, Bien the (ngăn bởi ;), Cau tra loi, Tag */
+  function buildFaqFromCsv(csvText) {
+    var rows = parseCSV(csvText);
+    var list = [];
+    rows.forEach(function (row) {
+      var stt = row[0], cat = (row[1] || "").trim(), q = (row[2] || "").trim();
+      var variants = (row[3] || "").split(";").map(function (s) { return s.trim(); }).filter(Boolean);
+      var a = (row[4] || "").trim(), tag = (row[5] || "").trim();
+      if (!q || !a || isNaN(parseInt(stt))) return; // bỏ dòng tiêu đề / dòng trống
+      list.push({ cat: cat, q: q, v: variants, a: a, tag: tag });
+    });
+    return indexFaq(list);
+  }
+
+  /* Tải câu hỏi từ Google Sheet nếu đã cấu hình SHEET_CSV; lỗi thì giữ nguyên danh sách dự phòng */
+  function tryLoadFromSheet() {
+    var url = SHEET_CSV || (window.localStorage && localStorage.getItem("tn_chatbot_sheet_url")) || "";
+    if (!url) return;
+    fetch(url).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }).then(function (text) {
+      var fresh = buildFaqFromCsv(text);
+      if (fresh.length) { FAQ = fresh; }
+    }).catch(function (err) {
+      console.error("Không tải được câu hỏi từ Google Sheet, dùng danh sách dự phòng:", err);
+    });
+  }
+  tryLoadFromSheet();
 
   var STOPWORDS = normKey("là gì vậy ạ không có được của và cho em anh chị mình bao nhiêu the a").split(" ");
 
@@ -202,8 +283,10 @@
   }
 
   var greeted = false;
+  function isMobile() { return window.matchMedia && window.matchMedia("(max-width:640px)").matches; }
   function openPanel() {
     document.getElementById("tnChatPanel").classList.add("open");
+    if (isMobile()) document.body.classList.add("tnChatOpenMobile");
     if (!greeted) {
       greeted = true;
       var greet = findByTag("greeting");
@@ -213,6 +296,7 @@
   }
   function closePanel() {
     document.getElementById("tnChatPanel").classList.remove("open");
+    document.body.classList.remove("tnChatOpenMobile");
   }
 
   document.getElementById("tnChatBtn").addEventListener("click", function () {
