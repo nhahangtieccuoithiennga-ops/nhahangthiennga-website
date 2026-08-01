@@ -17,6 +17,9 @@
 
   /* ── CẤU HÌNH: dán URL Apps Script Web App vào đây sau khi Deploy ── */
   var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNBfpb4yWrYgiCrb4ODqzrfNm9PcZG_RuNn_wa7mRBag2J3RkdwLJDO6dIU4Qv-Y61/exec";
+  var PAYMENT_AMOUNT = 2000;
+  var SEPAY_PAYMENT_URL = "https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=2000&des=test+Thien+Nga&showinfo=true&holder=LE%20THUONG%20DUY&store=Nh%C3%A0%20H%C3%A0ng%20Thi%E1%BB%87n%20Nga"; // dán link thanh toán/chuyển khoản SePay của bạn vào đây
+  var SEPAY_QR_URL = "https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=2000&des=test+Thien+Nga&showinfo=true&holder=LE%20THUONG%20DUY&store=Nh%C3%A0%20H%C3%A0ng%20Thi%E1%BB%87n%20Nga";       // dán ảnh QR SePay nếu có
 
   var css = `
   .tnBkOverlay{position:fixed;inset:0;z-index:80;background:rgba(5,30,16,.55);backdrop-filter:blur(2px);
@@ -52,6 +55,14 @@
   .tnBkSuccess .tnBkIcon{font-size:44px;margin-bottom:10px}
   .tnBkSuccess h3{color:#0b3f26;font-family:Georgia,serif;font-size:19px;margin-bottom:8px}
   .tnBkSuccess p{color:#657668;font-size:13.5px;line-height:1.6}
+  .tnBkSummary{margin:16px 0 18px;padding:14px;background:#f5fbf6;border:1px solid #d8e9db;border-radius:12px;text-align:left}
+  .tnBkSummary .row{display:flex;justify-content:space-between;gap:12px;font-size:12.8px;color:#173322;padding:6px 0;border-bottom:1px dashed #d1dfd3}
+  .tnBkSummary .row:last-child{border-bottom:none}
+  .tnBkPayBox{margin-top:16px;padding:14px;border:1px solid #d8e9db;background:#fff;border-radius:12px;text-align:left}
+  .tnBkPayBox strong{display:block;margin-bottom:8px;color:#0b3f26}
+  .tnBkPayBox .amount{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:#edf6ee;color:#0b3f26;font-weight:900;font-size:13px}
+  .tnBkPayBox .qr{margin-top:12px;display:grid;place-items:center;min-height:140px;border:1px dashed #b9d2bb;border-radius:10px;background:#fafdfb}
+  .tnBkPayBox .qr img{max-width:160px;max-height:160px;border-radius:10px}
   .tnBkWarn{background:#fff8e7;border:1.5px solid #b88a34;border-radius:9px;padding:10px 12px;
     font-size:12px;color:#7a5a1f;margin-bottom:14px;line-height:1.5}
   @media(max-width:480px){
@@ -170,12 +181,41 @@
     };
 
     function showSuccess() {
+      var orderId = "TN" + Date.now().toString().slice(-8);
+      var orderPayload = {
+        orderId: orderId,
+        customer: data.hoTen,
+        phone: data.soDienThoai,
+        amount: PAYMENT_AMOUNT,
+        status: "pending",
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem("tn_last_order", JSON.stringify(orderPayload));
+
+      var qrHtml = "";
+      if (SEPAY_QR_URL) {
+        qrHtml = '<div class="qr"><img src="' + SEPAY_QR_URL + '" alt="QR SePay"></div>';
+      } else {
+        qrHtml = '<div class="qr"><div style="font-size:13px;color:#657668;text-align:center;line-height:1.6">Chưa có QR SePay được dán.\nAnh/chị có thể dán link SePay hoặc QR sau khi đã có dữ liệu thật.</div></div>';
+      }
+
       body.innerHTML =
         '<div class="tnBkSuccess">' +
           '<div class="tnBkIcon">✅</div>' +
           '<h3>Đã nhận được thông tin!</h3>' +
           '<p>Cảm ơn anh/chị <b>' + (data.hoTen || "") + '</b> đã tin tưởng Thiện Nga.<br>' +
           'Bên em sẽ liên hệ số <b>' + (data.soDienThoai || "") + '</b> để tư vấn trong thời gian sớm nhất ạ.</p>' +
+          '<div class="tnBkSummary">' +
+            '<div class="row"><span>Mã đơn</span><b>' + orderId + '</b></div>' +
+            '<div class="row"><span>Tổng tiền test</span><b>' + PAYMENT_AMOUNT.toLocaleString("vi-VN") + 'đ</b></div>' +
+            '<div class="row"><span>Trạng thái</span><b>Pending</b></div>' +
+          '</div>' +
+          '<div class="tnBkPayBox">' +
+            '<strong>Thanh toán qua SePay</strong>' +
+            '<div class="amount">💳 Chuyển ' + PAYMENT_AMOUNT.toLocaleString("vi-VN") + 'đ</div>' +
+            qrHtml +
+            (SEPAY_PAYMENT_URL ? '<p style="margin-top:10px;font-size:12.5px"><a href="' + SEPAY_PAYMENT_URL + '" target="_blank" rel="noopener">Mở link thanh toán SePay</a></p>' : '') +
+          '</div>' +
           '<div class="tnBkAlt" style="margin-top:18px">' +
             '<a class="tnBkCall" href="tel:0965626128">☎ Gọi ngay luôn</a>' +
             '<a class="tnBkZalo" href="https://zalo.me/0965626128" target="_blank" rel="noopener">💬 Nhắn Zalo</a>' +
