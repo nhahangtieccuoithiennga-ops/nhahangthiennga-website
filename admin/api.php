@@ -54,6 +54,12 @@ if (!in_array('payment_status', $existingColumns, true)) {
     $conn->exec("ALTER TABLE orders ADD COLUMN payment_status TEXT DEFAULT 'pending'");
 }
 
+$conn->exec("UPDATE orders
+    SET order_id = COALESCE(order_id, 'TN-' || printf('%06d', id)),
+        payment_url = COALESCE(payment_url, 'https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=' || CAST(COALESCE(amount, 0) AS INTEGER) || '&des=' || 'TN-' || printf('%06d', id)),
+        payment_status = COALESCE(payment_status, 'pending')
+    WHERE order_id IS NULL OR payment_url IS NULL OR payment_status IS NULL");
+
 $seedCheck = $conn->querySingle("SELECT COUNT(*) FROM products");
 if ((int)$seedCheck === 0) {
     $conn->exec("INSERT INTO products (name, type, price, description, stock) VALUES
@@ -170,6 +176,9 @@ try {
             $amount = (float)($body['amount'] ?? 0);
             $status = trim((string)($body['status'] ?? 'pending'));
             $date = trim((string)($body['purchased_at'] ?? '')) ?: date('Y-m-d');
+            $orderId = 'TN-' . strtoupper(substr(md5($customerId . $productId . $amount . time()), 0, 8));
+            $paymentStatus = $status === 'success' ? 'paid' : 'pending';
+            $paymentUrl = 'https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=' . (int)$amount . '&des=' . urlencode($orderId);
 
             $productRow = $conn->querySingle("SELECT type, stock FROM products WHERE id = {$productId}", true);
             if ($productRow && $productRow['type'] === 'physical' && $productRow['stock'] !== null) {
@@ -179,14 +188,17 @@ try {
                 $conn->exec("UPDATE products SET stock = stock - 1 WHERE id = {$productId}");
             }
 
-            $stmt = $conn->prepare("INSERT INTO orders (customer_id, product_id, amount, status, purchased_at) VALUES (:customer_id, :product_id, :amount, :status, :purchased_at)");
+            $stmt = $conn->prepare("INSERT INTO orders (customer_id, product_id, amount, status, purchased_at, order_id, payment_url, payment_status) VALUES (:customer_id, :product_id, :amount, :status, :purchased_at, :order_id, :payment_url, :payment_status)");
             $stmt->bindValue(':customer_id', $customerId, SQLITE3_INTEGER);
             $stmt->bindValue(':product_id', $productId, SQLITE3_INTEGER);
             $stmt->bindValue(':amount', $amount, SQLITE3_FLOAT);
             $stmt->bindValue(':status', $status, SQLITE3_TEXT);
             $stmt->bindValue(':purchased_at', $date, SQLITE3_TEXT);
+            $stmt->bindValue(':order_id', $orderId, SQLITE3_TEXT);
+            $stmt->bindValue(':payment_url', $paymentUrl, SQLITE3_TEXT);
+            $stmt->bindValue(':payment_status', $paymentStatus, SQLITE3_TEXT);
             $stmt->execute();
-            sendJson(['ok' => true]);
+            sendJson(['ok' => true, 'order_id' => $orderId, 'payment_status' => $paymentStatus]);
         }
 
         if ($action === 'booking') {
