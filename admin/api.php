@@ -273,7 +273,7 @@ try {
             }
 
             $safeOrderId = $conn->escapeString($orderId);
-            $orderRow = $conn->querySingle("SELECT id, amount FROM orders WHERE order_id = '{$safeOrderId}'", true);
+            $orderRow = $conn->querySingle("SELECT id, amount FROM orders WHERE COALESCE(order_id, 'TN-' || printf('%06d', id)) = '{$safeOrderId}' LIMIT 1", true);
             if (!$orderRow) {
                 sendJson(['error' => 'Không tìm thấy đơn hàng phù hợp'], 404);
             }
@@ -284,7 +284,7 @@ try {
             }
 
             if ($isPaid) {
-                $conn->exec("UPDATE orders SET status = 'success', payment_status = 'paid' WHERE order_id = '{$safeOrderId}'");
+                $conn->exec("UPDATE orders SET order_id = COALESCE(order_id, 'TN-' || printf('%06d', id)), status = 'success', payment_status = 'paid' WHERE id = {$orderRow['id']}");
                 sendJson(['ok' => true, 'order_id' => $orderId, 'payment_status' => 'paid', 'transaction_id' => $transactionId]);
             }
 
