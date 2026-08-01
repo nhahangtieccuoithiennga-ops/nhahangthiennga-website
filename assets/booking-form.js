@@ -176,6 +176,7 @@
       soBan: document.getElementById("tnBkTables").value.trim(),
       ngayDuKien: document.getElementById("tnBkDate").value,
       ghiChu: document.getElementById("tnBkNote").value.trim(),
+      amount: PAYMENT_AMOUNT,
       trang: window.location.pathname.split("/").pop() || "index.html",
       thoiGianGui: new Date().toISOString()
     };

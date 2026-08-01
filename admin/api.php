@@ -177,6 +177,7 @@ try {
             $date = trim((string)($body['ngayDuKien'] ?? '')) ?: date('Y-m-d');
             $note = trim((string)($body['ghiChu'] ?? ''));
             $source = trim((string)($body['trang'] ?? ''));
+            $amount = (float)($body['amount'] ?? 2000);
 
             if ($name === '' || $phone === '') {
                 sendJson(['error' => 'Tên và số điện thoại là bắt buộc'], 400);
@@ -201,12 +202,12 @@ try {
             $stmt = $conn->prepare("INSERT INTO orders (customer_id, product_id, amount, status, purchased_at) VALUES (:customer_id, :product_id, :amount, :status, :purchased_at)");
             $stmt->bindValue(':customer_id', $customerId, SQLITE3_INTEGER);
             $stmt->bindValue(':product_id', $defaultProductId ?: 1, SQLITE3_INTEGER);
-            $stmt->bindValue(':amount', 0, SQLITE3_FLOAT);
+            $stmt->bindValue(':amount', $amount, SQLITE3_FLOAT);
             $stmt->bindValue(':status', 'pending', SQLITE3_TEXT);
             $stmt->bindValue(':purchased_at', $date, SQLITE3_TEXT);
             $stmt->execute();
 
-            sendJson(['ok' => true, 'customer_id' => $customerId, 'source' => $source, 'note' => $note]);
+            sendJson(['ok' => true, 'customer_id' => $customerId, 'source' => $source, 'note' => $note, 'amount' => $amount]);
         }
 
         sendJson(['error' => 'Missing action'], 400);
