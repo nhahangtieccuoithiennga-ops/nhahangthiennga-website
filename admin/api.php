@@ -255,6 +255,42 @@ try {
             sendJson(['ok' => true, 'customer_id' => $customerId, 'source' => $source, 'note' => $note, 'amount' => $amount, 'order_id' => $orderId, 'payment_status' => 'pending']);
         }
 
+        if ($action === 'payment_callback') {
+            $orderId = trim((string)($body['order_id'] ?? $body['orderId'] ?? ''));
+            $status = strtolower(trim((string)($body['status'] ?? $body['payment_status'] ?? '')));
+            $description = trim((string)($body['description'] ?? $body['des'] ?? ''));
+            $transactionId = trim((string)($body['transaction_id'] ?? $body['reference'] ?? ''));
+            $amount = isset($body['amount']) ? (float)$body['amount'] : null;
+
+            if ($orderId === '' && $description !== '') {
+                if (preg_match('/TN[-_ ]?([A-Z0-9]+)/i', $description, $matches)) {
+                    $orderId = 'TN-' . strtoupper($matches[1]);
+                }
+            }
+
+            if ($orderId === '') {
+                sendJson(['error' => 'Thiếu order_id trong callback'], 400);
+            }
+
+            $safeOrderId = $conn->escapeString($orderId);
+            $orderRow = $conn->querySingle("SELECT id, amount FROM orders WHERE order_id = '{$safeOrderId}'", true);
+            if (!$orderRow) {
+                sendJson(['error' => 'Không tìm thấy đơn hàng phù hợp'], 404);
+            }
+
+            $isPaid = in_array($status, ['paid', 'success', 'completed', 'confirmed', '1', 'true'], true);
+            if (!$isPaid && isset($body['paid']) && filter_var($body['paid'], FILTER_VALIDATE_BOOLEAN)) {
+                $isPaid = true;
+            }
+
+            if ($isPaid) {
+                $conn->exec("UPDATE orders SET status = 'success', payment_status = 'paid' WHERE order_id = '{$safeOrderId}'");
+                sendJson(['ok' => true, 'order_id' => $orderId, 'payment_status' => 'paid', 'transaction_id' => $transactionId]);
+            }
+
+            sendJson(['ok' => true, 'order_id' => $orderId, 'payment_status' => 'pending', 'transaction_id' => $transactionId]);
+        }
+
         sendJson(['error' => 'Missing action'], 400);
     }
 
