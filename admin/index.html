@@ -175,14 +175,10 @@
     </section>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js"></script>
   <script>
-    const STORAGE = {
-      sqliteDb: 'tn_admin_sqlite_db'
-    };
-
-    let SQL;
-    let db;
+    let products = [];
+    let customers = [];
+    let orders = [];
 
     function fmtMoney(n) {
       return Number(n || 0).toLocaleString('vi-VN') + 'đ';
@@ -197,142 +193,98 @@
         .replace(/'/g, '&#039;');
     }
 
-    function persistDb() {
-      const data = db.export();
-      const binary = Array.from(data).map(byte => String.fromCharCode(byte)).join('');
-      localStorage.setItem(STORAGE.sqliteDb, btoa(binary));
-    }
-
-    function loadDb() {
-      const raw = localStorage.getItem(STORAGE.sqliteDb);
-      if (!raw) {
-        db = new SQL.Database();
-        return;
+    async function api(action, method = 'GET', payload = null, id = null) {
+      const params = new URLSearchParams({ action });
+      if (id !== null) {
+        params.set('id', String(id));
       }
-      const bytes = Uint8Array.from(atob(raw), c => c.charCodeAt(0));
-      db = new SQL.Database(bytes);
+
+      const url = `./api.php?${params.toString()}`;
+      const options = {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      if (payload !== null) {
+        options.body = JSON.stringify(payload);
+      }
+
+      const response = await fetch(url, options);
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        data = { error: text || 'Server error' };
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Request failed');
+      }
+      return data;
     }
 
-    function ensureSchema() {
-      db.run(`CREATE TABLE IF NOT EXISTS products (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        type TEXT,
-        price REAL,
-        description TEXT,
-        stock INTEGER
-      )`);
-
-      db.run(`CREATE TABLE IF NOT EXISTS customers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        phone TEXT NOT NULL,
-        zalo TEXT,
-        registered_at TEXT
-      )`);
-
-      db.run(`CREATE TABLE IF NOT EXISTS orders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        customer_id INTEGER NOT NULL,
-        product_id INTEGER NOT NULL,
-        amount REAL,
-        status TEXT,
-        purchased_at TEXT
-      )`);
-    }
-
-    function seedIfEmpty() {
-      const rows = db.exec('SELECT COUNT(*) AS cnt FROM products');
-      const count = Number(rows[0]?.values?.[0]?.[0] || 0);
-      if (count > 0) return;
-
-      db.run(`INSERT INTO products (name, type, price, description, stock) VALUES
-        ('Checklist Tiệc Cưới', 'digital', 199000, 'Checklist chuẩn bị tiệc, viết gọn, dễ dùng.', NULL),
-        ('Set Menu Cưới', 'service', 2200000, 'Gói tư vấn menu cho tiệc cưới.', NULL),
-        ('Bàn ghế tiệc', 'physical', 1200000, 'Bàn ghế cho sự kiện gia đình.', 20)`);
-
-      db.run(`INSERT INTO customers (name, phone, zalo, registered_at) VALUES
-        ('Nguyễn Văn A', '0900000000', '0900000000', '2026-08-01'),
-        ('Trần Thị B', '0911111111', '0911111111', '2026-08-01')`);
-
-      db.run(`INSERT INTO orders (customer_id, product_id, amount, status, purchased_at) VALUES
-        (1, 1, 199000, 'pending', '2026-08-01'),
-        (2, 2, 2200000, 'success', '2026-08-01')`);
-    }
-
-    function fetchProductRows() {
-      return db.exec(`SELECT id, name, type, price, description, stock FROM products ORDER BY id`)[0]?.values || [];
-    }
-
-    function fetchCustomerRows() {
-      return db.exec(`SELECT id, name, phone, zalo, registered_at FROM customers ORDER BY id`)[0]?.values || [];
-    }
-
-    function fetchOrderRows() {
-      return db.exec(`SELECT o.id, c.name AS customer_name, p.name AS product_name, o.amount, o.status, o.purchased_at
-        FROM orders o
-        LEFT JOIN customers c ON c.id = o.customer_id
-        LEFT JOIN products p ON p.id = o.product_id
-        ORDER BY o.id`)[0]?.values || [];
+    async function loadAll() {
+      try {
+        products = await api('products');
+        customers = await api('customers');
+        orders = await api('orders');
+        renderAll();
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
     function renderProducts() {
       const tbody = document.getElementById('productsTable');
-      const rows = fetchProductRows();
-      tbody.innerHTML = rows.map(row => {
-        const [id, name, type, price, description, stock] = row;
-        return `
-          <tr>
-            <td><b>${escapeHtml(name)}</b></td>
-            <td>${escapeHtml(type)}</td>
-            <td>${fmtMoney(price)}</td>
-            <td>${stock == null ? '—' : stock}</td>
-            <td>${escapeHtml(description || '')}</td>
-            <td><button class="btn danger" onclick="deleteProduct(${id})">Xóa</button></td>
-          </tr>`;
-      }).join('');
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td><b>${escapeHtml(p.name)}</b></td>
+          <td>${escapeHtml(p.type)}</td>
+          <td>${fmtMoney(p.price)}</td>
+          <td>${p.stock == null ? '—' : p.stock}</td>
+          <td>${escapeHtml(p.description || '')}</td>
+          <td><button class="btn danger" onclick="deleteProduct(${p.id})">Xóa</button></td>
+        </tr>
+      `).join('');
 
       const select = document.getElementById('oProduct');
-      select.innerHTML = rows.map(row => `<option value="${row[0]}">${escapeHtml(row[1])}</option>`).join('');
+      select.innerHTML = products.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
     }
 
     function renderCustomers() {
       const tbody = document.getElementById('customersTable');
-      const rows = fetchCustomerRows();
-      tbody.innerHTML = rows.map(row => {
-        const [id, name, phone, zalo, registeredAt] = row;
-        return `
-          <tr>
-            <td>${escapeHtml(name)}</td>
-            <td>${escapeHtml(phone)}</td>
-            <td>${escapeHtml(zalo || '')}</td>
-            <td>${escapeHtml(registeredAt || '')}</td>
-            <td><button class="btn danger" onclick="deleteCustomer(${id})">Xóa</button></td>
-          </tr>`;
-      }).join('');
+      tbody.innerHTML = customers.map(c => `
+        <tr>
+          <td>${escapeHtml(c.name)}</td>
+          <td>${escapeHtml(c.phone)}</td>
+          <td>${escapeHtml(c.zalo || '')}</td>
+          <td>${escapeHtml(c.registered_at || c.registeredAt || '')}</td>
+          <td><button class="btn danger" onclick="deleteCustomer(${c.id})">Xóa</button></td>
+        </tr>
+      `).join('');
 
       const select = document.getElementById('oCustomer');
-      select.innerHTML = rows.map(row => `<option value="${row[0]}">${escapeHtml(row[1])}</option>`).join('');
+      select.innerHTML = customers.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
     }
 
     function renderOrders() {
       const tbody = document.getElementById('ordersTable');
-      const rows = fetchOrderRows();
-      tbody.innerHTML = rows.map(row => {
-        const [id, customerName, productName, amount, status, purchasedAt] = row;
-        return `
-          <tr>
-            <td>${escapeHtml(customerName || '-')}</td>
-            <td>${escapeHtml(productName || '-')}</td>
-            <td>${fmtMoney(amount)}</td>
-            <td><span class="status ${status}">${escapeHtml(status)}</span></td>
-            <td>${escapeHtml(purchasedAt || '')}</td>
-            <td><button class="btn danger" onclick="deleteOrder(${id})">Xóa</button></td>
-          </tr>`;
-      }).join('');
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td>${escapeHtml(o.customer_name || '-')}</td>
+          <td>${escapeHtml(o.product_name || '-')}</td>
+          <td>${fmtMoney(o.amount)}</td>
+          <td><span class="status ${o.status}">${escapeHtml(o.status)}</span></td>
+          <td>${escapeHtml(o.purchased_at || '')}</td>
+          <td><button class="btn danger" onclick="deleteOrder(${o.id})">Xóa</button></td>
+        </tr>
+      `).join('');
     }
 
-    function saveProduct() {
+    async function saveProduct() {
       const name = document.getElementById('pName').value.trim();
       const type = document.getElementById('pType').value;
       const price = Number(document.getElementById('pPrice').value || 0);
@@ -340,90 +292,84 @@
       const description = document.getElementById('pDesc').value.trim();
       if (!name) return alert('Vui lòng nhập tên sản phẩm');
 
-      db.run('INSERT INTO products (name, type, price, description, stock) VALUES (?, ?, ?, ?, ?)', [name, type, price, description, stock]);
-      persistDb();
-      renderAll();
-      document.getElementById('pName').value = '';
-      document.getElementById('pPrice').value = '';
-      document.getElementById('pStock').value = '';
-      document.getElementById('pDesc').value = '';
+      try {
+        await api('products', 'POST', { name, type, price, stock, description });
+        await loadAll();
+        document.getElementById('pName').value = '';
+        document.getElementById('pPrice').value = '';
+        document.getElementById('pStock').value = '';
+        document.getElementById('pDesc').value = '';
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
-    function saveCustomer() {
+    async function saveCustomer() {
       const name = document.getElementById('cName').value.trim();
       const phone = document.getElementById('cPhone').value.trim();
       const zalo = document.getElementById('cZalo').value.trim();
-      const registeredAt = document.getElementById('cDate').value || new Date().toISOString().slice(0, 10);
+      const registered_at = document.getElementById('cDate').value || new Date().toISOString().slice(0, 10);
       if (!name || !phone) return alert('Tên và số điện thoại là bắt buộc');
 
-      db.run('INSERT INTO customers (name, phone, zalo, registered_at) VALUES (?, ?, ?, ?)', [name, phone, zalo, registeredAt]);
-      persistDb();
-      renderAll();
-      document.getElementById('cName').value = '';
-      document.getElementById('cPhone').value = '';
-      document.getElementById('cZalo').value = '';
-      document.getElementById('cDate').value = '';
+      try {
+        await api('customers', 'POST', { name, phone, zalo, registered_at });
+        await loadAll();
+        document.getElementById('cName').value = '';
+        document.getElementById('cPhone').value = '';
+        document.getElementById('cZalo').value = '';
+        document.getElementById('cDate').value = '';
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
-    function saveOrder() {
-      const customerId = Number(document.getElementById('oCustomer').value);
-      const productId = Number(document.getElementById('oProduct').value);
+    async function saveOrder() {
+      const customer_id = Number(document.getElementById('oCustomer').value);
+      const product_id = Number(document.getElementById('oProduct').value);
       const amount = Number(document.getElementById('oAmount').value || 0);
       const status = document.getElementById('oStatus').value;
-      const date = document.getElementById('oDate').value || new Date().toISOString().slice(0, 10);
+      const purchased_at = document.getElementById('oDate').value || new Date().toISOString().slice(0, 10);
 
-      const productQuery = db.exec('SELECT type, stock FROM products WHERE id = ' + productId);
-      const product = productQuery[0]?.values?.[0] || [];
-      const productType = product[0];
-      const currentStock = product[1];
-      if (productType === 'physical' && currentStock != null) {
-        if (currentStock > 0) {
-          db.run('UPDATE products SET stock = stock - 1 WHERE id = ?', [productId]);
-        } else {
-          alert('Sản phẩm vật lý đã hết hàng, không thể tạo đơn mới');
-          return;
-        }
+      try {
+        await api('orders', 'POST', { customer_id, product_id, amount, status, purchased_at });
+        await loadAll();
+        document.getElementById('oAmount').value = '';
+      } catch (error) {
+        alert(error.message);
       }
-
-      db.run('INSERT INTO orders (customer_id, product_id, amount, status, purchased_at) VALUES (?, ?, ?, ?, ?)', [customerId, productId, amount, status, date]);
-      persistDb();
-      renderAll();
-      document.getElementById('oAmount').value = '';
     }
 
-    function deleteProduct(id) {
-      db.run('DELETE FROM products WHERE id = ?', [id]);
-      persistDb();
-      renderAll();
+    async function deleteProduct(id) {
+      try {
+        await api('products', 'DELETE', null, id);
+        await loadAll();
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
-    function deleteCustomer(id) {
-      db.run('DELETE FROM customers WHERE id = ?', [id]);
-      persistDb();
-      renderAll();
+    async function deleteCustomer(id) {
+      try {
+        await api('customers', 'DELETE', null, id);
+        await loadAll();
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
-    function deleteOrder(id) {
-      db.run('DELETE FROM orders WHERE id = ?', [id]);
-      persistDb();
-      renderAll();
+    async function deleteOrder(id) {
+      try {
+        await api('orders', 'DELETE', null, id);
+        await loadAll();
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
     function renderAll() {
       renderProducts();
       renderCustomers();
       renderOrders();
-    }
-
-    async function initAdmin() {
-      SQL = await initSqlJs({
-        locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/${file}`
-      });
-      loadDb();
-      ensureSchema();
-      seedIfEmpty();
-      persistDb();
-      renderAll();
     }
 
     document.querySelectorAll('.tab').forEach(tab => {
@@ -437,7 +383,7 @@
     });
 
     document.getElementById('oDate').value = new Date().toISOString().slice(0, 10);
-    initAdmin();
+    loadAll();
   </script>
 </body>
 </html>
