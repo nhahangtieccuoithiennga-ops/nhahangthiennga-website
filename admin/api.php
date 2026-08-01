@@ -33,8 +33,26 @@ $conn->exec("CREATE TABLE IF NOT EXISTS orders (
     product_id INTEGER NOT NULL,
     amount REAL,
     status TEXT,
-    purchased_at TEXT
+    purchased_at TEXT,
+    order_id TEXT,
+    payment_url TEXT,
+    payment_status TEXT DEFAULT 'pending'
 )");
+
+$checkoutColumns = $conn->query("PRAGMA table_info(orders)");
+$existingColumns = [];
+while ($row = $checkoutColumns->fetchArray(SQLITE3_ASSOC)) {
+    $existingColumns[] = $row['name'];
+}
+if (!in_array('order_id', $existingColumns, true)) {
+    $conn->exec('ALTER TABLE orders ADD COLUMN order_id TEXT');
+}
+if (!in_array('payment_url', $existingColumns, true)) {
+    $conn->exec('ALTER TABLE orders ADD COLUMN payment_url TEXT');
+}
+if (!in_array('payment_status', $existingColumns, true)) {
+    $conn->exec("ALTER TABLE orders ADD COLUMN payment_status TEXT DEFAULT 'pending'");
+}
 
 $seedCheck = $conn->querySingle("SELECT COUNT(*) FROM products");
 if ((int)$seedCheck === 0) {
@@ -84,7 +102,7 @@ try {
 
         if ($action === 'orders') {
             $rows = [];
-            $result = $conn->query("SELECT o.id, c.name AS customer_name, p.name AS product_name, o.amount, o.status, o.purchased_at
+            $result = $conn->query("SELECT o.id, o.order_id, c.name AS customer_name, p.name AS product_name, o.amount, o.status, o.payment_status, o.payment_url, o.purchased_at
                 FROM orders o
                 LEFT JOIN customers c ON c.id = o.customer_id
                 LEFT JOIN products p ON p.id = o.product_id
@@ -178,6 +196,8 @@ try {
             $note = trim((string)($body['ghiChu'] ?? ''));
             $source = trim((string)($body['trang'] ?? ''));
             $amount = (float)($body['amount'] ?? 2000);
+            $orderId = 'TN' . strtoupper(substr(md5($phone . $date . time()), 0, 8));
+            $paymentUrl = trim((string)($body['payment_url'] ?? '')) ?: 'https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=' . (int)$amount . '&des=' . urlencode('TN-' . $orderId);
 
             if ($name === '' || $phone === '') {
                 sendJson(['error' => 'Tên và số điện thoại là bắt buộc'], 400);
@@ -199,15 +219,18 @@ try {
             }
 
             $defaultProductId = (int)$conn->querySingle("SELECT id FROM products ORDER BY id LIMIT 1");
-            $stmt = $conn->prepare("INSERT INTO orders (customer_id, product_id, amount, status, purchased_at) VALUES (:customer_id, :product_id, :amount, :status, :purchased_at)");
+            $stmt = $conn->prepare("INSERT INTO orders (customer_id, product_id, amount, status, purchased_at, order_id, payment_url, payment_status) VALUES (:customer_id, :product_id, :amount, :status, :purchased_at, :order_id, :payment_url, :payment_status)");
             $stmt->bindValue(':customer_id', $customerId, SQLITE3_INTEGER);
             $stmt->bindValue(':product_id', $defaultProductId ?: 1, SQLITE3_INTEGER);
             $stmt->bindValue(':amount', $amount, SQLITE3_FLOAT);
             $stmt->bindValue(':status', 'pending', SQLITE3_TEXT);
             $stmt->bindValue(':purchased_at', $date, SQLITE3_TEXT);
+            $stmt->bindValue(':order_id', $orderId, SQLITE3_TEXT);
+            $stmt->bindValue(':payment_url', $paymentUrl, SQLITE3_TEXT);
+            $stmt->bindValue(':payment_status', 'pending', SQLITE3_TEXT);
             $stmt->execute();
 
-            sendJson(['ok' => true, 'customer_id' => $customerId, 'source' => $source, 'note' => $note, 'amount' => $amount]);
+            sendJson(['ok' => true, 'customer_id' => $customerId, 'source' => $source, 'note' => $note, 'amount' => $amount, 'order_id' => $orderId, 'payment_status' => 'pending']);
         }
 
         sendJson(['error' => 'Missing action'], 400);
