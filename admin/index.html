@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – Thiện Nga</title>
+  <style>
+    :root {
+      --blue: #0f5a2c;
+      --blue-2: #174b35;
+      --gold: #f1cf73;
+      --bg: #f5f7f2;
+      --card: #ffffff;
+      --text: #173322;
+      --muted: #657668;
+      --line: #dfe9e0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+    .top h1 { margin: 0; font-size: 26px; color: var(--blue-2); }
+    .tag { background: #eaf4ec; color: var(--blue); border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 800; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+    .tab { border: 1px solid var(--line); background: #fff; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 800; }
+    .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: 0 8px 24px rgba(15, 90, 44, 0.08); }
+    .panel.hidden { display: none; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; font-weight: 800; color: var(--blue-2); }
+    .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit; }
+    .field textarea { min-height: 80px; resize: vertical; }
+    .btn { border: none; border-radius: 10px; padding: 10px 16px; font: inherit; font-weight: 900; cursor: pointer; background: var(--blue); color: #fff; }
+    .btn.secondary { background: #2f9d55; }
+    .btn.danger { background: #a33a38; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { padding: 10px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; vertical-align: top; }
+    th { background: #f8faf8; color: var(--blue-2); }
+    .small { color: var(--muted); font-size: 12px; }
+    .status { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 12px; font-weight: 900; }
+    .status.pending { background: #fff6db; color: #8d6212; }
+    .status.success { background: #e4f7e8; color: #0b6f2f; }
+    .muted { color: var(--muted); }
+    @media (max-width: 700px) { .top { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Admin Panel – CRM Thiện Nga</h1>
+        <div class="small">Demo nhanh: quản lý sản phẩm, khách hàng và đơn hàng — không cần đăng nhập.</div>
+      </div>
+      <div class="tag">Local demo</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="products">Sản phẩm</button>
+      <button class="tab" data-tab="customers">Khách hàng</button>
+      <button class="tab" data-tab="orders">Đơn hàng</button>
+    </div>
+
+    <section class="panel" id="productsPanel">
+      <div class="grid">
+        <div class="field">
+          <label>Tên sản phẩm</label>
+          <input id="pName" type="text" placeholder="Ví dụ: Checklist Tiệc Cưới" />
+        </div>
+        <div class="field">
+          <label>Loại</label>
+          <select id="pType">
+            <option value="digital">digital</option>
+            <option value="physical">physical</option>
+            <option value="service">service</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Giá</label>
+          <input id="pPrice" type="number" placeholder="200000" />
+        </div>
+        <div class="field">
+          <label>Số lượng còn lại</label>
+          <input id="pStock" type="number" placeholder="Để trống nếu không cần" />
+        </div>
+        <div class="field" style="grid-column: 1 / -1;">
+          <label>Mô tả</label>
+          <textarea id="pDesc" placeholder="Mô tả ngắn về sản phẩm..."></textarea>
+        </div>
+      </div>
+      <button class="btn" onclick="saveProduct()">Thêm sản phẩm</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tên</th><th>Loại</th><th>Giá</th><th>Tồn kho</th><th>Mô tả</th><th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="productsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="customersPanel">
+      <div class="grid">
+        <div class="field">
+          <label>Họ tên</label>
+          <input id="cName" type="text" placeholder="Tên khách hàng" />
+        </div>
+        <div class="field">
+          <label>Số điện thoại</label>
+          <input id="cPhone" type="tel" placeholder="09..." />
+        </div>
+        <div class="field">
+          <label>Zalo</label>
+          <input id="cZalo" type="text" placeholder="Zalo" />
+        </div>
+        <div class="field">
+          <label>Ngày đăng ký</label>
+          <input id="cDate" type="date" />
+        </div>
+      </div>
+      <button class="btn secondary" onclick="saveCustomer()">Thêm khách hàng</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Họ tên</th><th>SĐT</th><th>Zalo</th><th>Ngày đăng ký</th><th>Hành động</th></tr>
+          </thead>
+          <tbody id="customersTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="ordersPanel">
+      <div class="grid">
+        <div class="field">
+          <label>Khách hàng</label>
+          <select id="oCustomer"></select>
+        </div>
+        <div class="field">
+          <label>Sản phẩm</label>
+          <select id="oProduct"></select>
+        </div>
+        <div class="field">
+          <label>Số tiền</label>
+          <input id="oAmount" type="number" placeholder="200000" />
+        </div>
+        <div class="field">
+          <label>Trạng thái</label>
+          <select id="oStatus">
+            <option value="pending">pending</option>
+            <option value="success">success</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Ngày mua</label>
+          <input id="oDate" type="date" />
+        </div>
+      </div>
+      <button class="btn" onclick="saveOrder()">Thêm đơn hàng</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Khách</th><th>Sản phẩm</th><th>Số tiền</th><th>Trạng thái</th><th>Ngày</th><th>Hành động</th></tr>
+          </thead>
+          <tbody id="ordersTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE = {
+      products: 'tn_admin_products',
+      customers: 'tn_admin_customers',
+      orders: 'tn_admin_orders'
+    };
+
+    const seedData = {
+      products: [
+        { id: 1, name: 'Checklist Tiệc Cưới', type: 'digital', price: 199000, description: 'Checklist chuẩn bị tiệc, viết gọn, dễ dùng.', stock: null },
+        { id: 2, name: 'Set Menu Cưới', type: 'service', price: 2200000, description: 'Gói tư vấn menu cho tiệc cưới.', stock: null },
+        { id: 3, name: 'Bàn ghế tiệc', type: 'physical', price: 1200000, description: 'Bàn ghế cho sự kiện gia đình.', stock: 20 }
+      ],
+      customers: [
+        { id: 1, name: 'Nguyễn Văn A', phone: '0900000000', zalo: '0900000000', registeredAt: '2026-08-01' },
+        { id: 2, name: 'Trần Thị B', phone: '0911111111', zalo: '0911111111', registeredAt: '2026-08-01' }
+      ],
+      orders: [
+        { id: 1, customerId: 1, productId: 1, amount: 199000, status: 'pending', date: '2026-08-01' },
+        { id: 2, customerId: 2, productId: 2, amount: 2200000, status: 'success', date: '2026-08-01' }
+      ]
+    };
+
+    function load(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) {
+          localStorage.setItem(key, JSON.stringify(fallback));
+          return fallback;
+        }
+        return JSON.parse(raw);
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    function saveAll() {
+      localStorage.setItem(STORAGE.products, JSON.stringify(products));
+      localStorage.setItem(STORAGE.customers, JSON.stringify(customers));
+      localStorage.setItem(STORAGE.orders, JSON.stringify(orders));
+    }
+
+    let products = load(STORAGE.products, seedData.products);
+    let customers = load(STORAGE.customers, seedData.customers);
+    let orders = load(STORAGE.orders, seedData.orders);
+
+    function fmtMoney(n) {
+      return Number(n || 0).toLocaleString('vi-VN') + 'đ';
+    }
+
+    function renderProducts() {
+      const tbody = document.getElementById('productsTable');
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td><b>${p.name}</b></td>
+          <td>${p.type}</td>
+          <td>${fmtMoney(p.price)}</td>
+          <td>${p.stock == null ? '—' : p.stock}</td>
+          <td>${p.description || ''}</td>
+          <td><button class="btn danger" onclick="deleteProduct(${p.id})">Xóa</button></td>
+        </tr>
+      `).join('');
+
+      const select = document.getElementById('oProduct');
+      select.innerHTML = products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    }
+
+    function renderCustomers() {
+      const tbody = document.getElementById('customersTable');
+      tbody.innerHTML = customers.map(c => `
+        <tr>
+          <td>${c.name}</td>
+          <td>${c.phone}</td>
+          <td>${c.zalo || ''}</td>
+          <td>${c.registeredAt || ''}</td>
+          <td><button class="btn danger" onclick="deleteCustomer(${c.id})">Xóa</button></td>
+        </tr>
+      `).join('');
+
+      const select = document.getElementById('oCustomer');
+      select.innerHTML = customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    function renderOrders() {
+      const tbody = document.getElementById('ordersTable');
+      tbody.innerHTML = orders.map(o => {
+        const customer = customers.find(c => c.id === o.customerId);
+        const product = products.find(p => p.id === o.productId);
+        return `
+          <tr>
+            <td>${customer ? customer.name : '-'}</td>
+            <td>${product ? product.name : '-'}</td>
+            <td>${fmtMoney(o.amount)}</td>
+            <td><span class="status ${o.status}">${o.status}</span></td>
+            <td>${o.date || ''}</td>
+            <td><button class="btn danger" onclick="deleteOrder(${o.id})">Xóa</button></td>
+          </tr>`;
+      }).join('');
+    }
+
+    function saveProduct() {
+      const name = document.getElementById('pName').value.trim();
+      const type = document.getElementById('pType').value;
+      const price = Number(document.getElementById('pPrice').value || 0);
+      const stock = document.getElementById('pStock').value === '' ? null : Number(document.getElementById('pStock').value);
+      const description = document.getElementById('pDesc').value.trim();
+      if (!name) return alert('Vui lòng nhập tên sản phẩm');
+      products.push({ id: Date.now(), name, type, price, stock, description });
+      saveAll();
+      renderAll();
+      document.getElementById('pName').value = '';
+      document.getElementById('pPrice').value = '';
+      document.getElementById('pStock').value = '';
+      document.getElementById('pDesc').value = '';
+    }
+
+    function saveCustomer() {
+      const name = document.getElementById('cName').value.trim();
+      const phone = document.getElementById('cPhone').value.trim();
+      const zalo = document.getElementById('cZalo').value.trim();
+      const registeredAt = document.getElementById('cDate').value || new Date().toISOString().slice(0, 10);
+      if (!name || !phone) return alert('Tên và số điện thoại là bắt buộc');
+      customers.push({ id: Date.now(), name, phone, zalo, registeredAt });
+      saveAll();
+      renderAll();
+      document.getElementById('cName').value = '';
+      document.getElementById('cPhone').value = '';
+      document.getElementById('cZalo').value = '';
+      document.getElementById('cDate').value = '';
+    }
+
+    function saveOrder() {
+      const customerId = Number(document.getElementById('oCustomer').value);
+      const productId = Number(document.getElementById('oProduct').value);
+      const amount = Number(document.getElementById('oAmount').value || 0);
+      const status = document.getElementById('oStatus').value;
+      const date = document.getElementById('oDate').value || new Date().toISOString().slice(0, 10);
+      const product = products.find(p => p.id === productId);
+      if (product && product.type === 'physical' && product.stock != null) {
+        if (product.stock > 0) {
+          product.stock -= 1;
+        } else {
+          alert('Sản phẩm vật lý đã hết hàng, không thể tạo đơn mới');
+          return;
+        }
+      }
+      orders.push({ id: Date.now(), customerId, productId, amount, status, date });
+      saveAll();
+      renderAll();
+      document.getElementById('oAmount').value = '';
+    }
+
+    function deleteProduct(id) {
+      products = products.filter(p => p.id !== id);
+      saveAll();
+      renderAll();
+    }
+
+    function deleteCustomer(id) {
+      customers = customers.filter(c => c.id !== id);
+      saveAll();
+      renderAll();
+    }
+
+    function deleteOrder(id) {
+      orders = orders.filter(o => o.id !== id);
+      saveAll();
+      renderAll();
+    }
+
+    function renderAll() {
+      renderProducts();
+      renderCustomers();
+      renderOrders();
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('productsPanel').classList.toggle('hidden', tab.dataset.tab !== 'products');
+        document.getElementById('customersPanel').classList.toggle('hidden', tab.dataset.tab !== 'customers');
+        document.getElementById('ordersPanel').classList.toggle('hidden', tab.dataset.tab !== 'orders');
+      });
+    });
+
+    document.getElementById('oDate').value = new Date().toISOString().slice(0, 10);
+    renderAll();
+  </script>
+</body>
+</html>
