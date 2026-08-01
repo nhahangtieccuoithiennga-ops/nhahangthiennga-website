@@ -291,8 +291,10 @@
           <td>${escapeHtml(o.customer_name || '-')}</td>
           <td>${escapeHtml(o.product_name || '-')}</td>
           <td>${fmtMoney(o.amount)}</td>
-          <td><span class="status ${o.status}">${escapeHtml(o.status)}</span></td>          <td>${escapeHtml(o.order_id || '-')}</td>
-          <td>${escapeHtml(o.payment_status || 'pending')}</td>          <td>${escapeHtml(o.purchased_at || '')}</td>
+          <td><span class="status ${o.status}">${escapeHtml(o.status)}</span></td>
+          <td>${escapeHtml(o.order_id || '-')}</td>
+          <td>${o.payment_url ? `<a href="${escapeHtml(o.payment_url)}" target="_blank" rel="noreferrer">${escapeHtml(o.payment_status || 'pending')}</a>` : escapeHtml(o.payment_status || 'pending')}</td>
+          <td>${escapeHtml(o.purchased_at || '')}</td>
           <td><button class="btn danger" onclick="deleteOrder(${o.id})">Xóa</button></td>
         </tr>
       `).join('');

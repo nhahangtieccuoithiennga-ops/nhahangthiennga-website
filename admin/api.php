@@ -57,7 +57,10 @@ if (!in_array('payment_status', $existingColumns, true)) {
 $conn->exec("UPDATE orders
     SET order_id = COALESCE(order_id, 'TN-' || printf('%06d', id)),
         payment_url = COALESCE(payment_url, 'https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=' || CAST(COALESCE(amount, 0) AS INTEGER) || '&des=' || 'TN-' || printf('%06d', id)),
-        payment_status = COALESCE(payment_status, 'pending')
+        payment_status = CASE
+            WHEN status = 'success' THEN 'paid'
+            ELSE 'pending'
+        END
     WHERE order_id IS NULL OR payment_url IS NULL OR payment_status IS NULL");
 
 $seedCheck = $conn->querySingle("SELECT COUNT(*) FROM products");
