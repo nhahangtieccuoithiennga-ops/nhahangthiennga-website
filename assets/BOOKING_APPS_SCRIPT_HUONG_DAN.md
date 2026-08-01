@@ -7,7 +7,7 @@ không cần server, không tốn phí.
 ## Bước 1 — Tạo Google Sheet mới
 1. Vào https://sheets.google.com → tạo Sheet mới, đặt tên "Khách hàng đặt lịch tư vấn".
 2. Dòng đầu tiên (header), gõ đúng các cột theo thứ tự sau:
-   `Thời gian | Họ tên | Số điện thoại | Loại tiệc | Số bàn dự kiến | Ngày dự kiến | Ghi chú | Trang gửi`
+   `Thời gian | Họ tên | Số điện thoại | Email | Loại tiệc | Số bàn dự kiến | Ngày dự kiến | Ghi chú | Trang gửi`
 
 ## Bước 2 — Mở Apps Script gắn với Sheet này
 1. Trong Sheet, vào menu **Tiện ích mở rộng (Extensions) → Apps Script**.
@@ -21,6 +21,7 @@ function doPost(e) {
     new Date(p.thoiGianGui || new Date()),
     p.hoTen || "",
     p.soDienThoai || "",
+    p.email || "",
     p.loaiTiec || "",
     p.soBan || "",
     p.ngayDuKien || "",

@@ -16,7 +16,7 @@
   "use strict";
 
   /* ── CẤU HÌNH: dán URL Apps Script Web App vào đây sau khi Deploy ── */
-  var APPS_SCRIPT_URL = "";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNBfpb4yWrYgiCrb4ODqzrfNm9PcZG_RuNn_wa7mRBag2J3RkdwLJDO6dIU4Qv-Y61/exec";
 
   var css = `
   .tnBkOverlay{position:fixed;inset:0;z-index:80;background:rgba(5,30,16,.55);backdrop-filter:blur(2px);
@@ -83,6 +83,10 @@
           <div class="tnBkField">
             <label>Số điện thoại / Zalo *</label>
             <input type="tel" id="tnBkPhone" required placeholder="09xxxxxxxx">
+          </div>
+          <div class="tnBkField">
+            <label>Email (không bắt buộc)</label>
+            <input type="email" id="tnBkEmail" placeholder="email@example.com">
           </div>
           <div class="tnBkRow2">
             <div class="tnBkField">
@@ -156,6 +160,7 @@
     var data = {
       hoTen: document.getElementById("tnBkName").value.trim(),
       soDienThoai: document.getElementById("tnBkPhone").value.trim(),
+      email: document.getElementById("tnBkEmail").value.trim(),
       loaiTiec: document.getElementById("tnBkType").value,
       soBan: document.getElementById("tnBkTables").value.trim(),
       ngayDuKien: document.getElementById("tnBkDate").value,
