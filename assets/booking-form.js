@@ -16,7 +16,7 @@
   "use strict";
 
   /* ── CẤU HÌNH: dán URL Apps Script Web App vào đây sau khi Deploy ── */
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNBfpb4yWrYgiCrb4ODqzrfNm9PcZG_RuNn_wa7mRBag2J3RkdwLJDO6dIU4Qv-Y61/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwezJxz0ZoNSHCd66nntlWmSehhedqfUE4xVtfeoeGPIjer63V-_N5TEt_S3xDqcQTgxg/exec";
   var PAYMENT_AMOUNT = 2000;
   var SEPAY_PAYMENT_URL = "https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=2000&des=test+Thien+Nga&showinfo=true&holder=LE%20THUONG%20DUY&store=Nh%C3%A0%20H%C3%A0ng%20Thi%E1%BB%87n%20Nga"; // dán link thanh toán/chuyển khoản SePay của bạn vào đây
   var SEPAY_QR_URL = "https://vietqr.app/img?bank=TPBank&acc=10004884646&template=compact&amount=2000&des=test+Thien+Nga&showinfo=true&holder=LE%20THUONG%20DUY&store=Nh%C3%A0%20H%C3%A0ng%20Thi%E1%BB%87n%20Nga";       // dán ảnh QR SePay nếu có
@@ -227,7 +227,20 @@
     submitBtn.disabled = true;
     submitBtn.textContent = "Đang gửi...";
 
-    fetch("/admin/api.php?action=booking", {
+    var sheetRequest = Promise.resolve();
+    if (APPS_SCRIPT_URL) {
+      var formBody = new URLSearchParams(data).toString();
+      sheetRequest = fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formBody
+      }).catch(function (err) {
+        console.error("Lỗi gửi Google Sheet:", err);
+      });
+    }
+
+    var crmRequest = fetch("/admin/api.php?action=booking", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -240,23 +253,13 @@
         }
         return payload;
       });
-    }).then(function () {
-      showSuccess();
     }).catch(function (err) {
-      console.error("Lỗi gửi form khảo sát:", err);
-      if (APPS_SCRIPT_URL) {
-        var formBody = new URLSearchParams(data).toString();
-        return fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: formBody
-        }).then(function () {
-          showSuccess();
-        }).catch(function () {
-          showSuccess();
-        });
-      }
+      console.error("Lỗi lưu CRM:", err);
+    });
+
+    Promise.all([crmRequest, sheetRequest]).then(function () {
+      showSuccess();
+    }).catch(function () {
       showSuccess();
     });
   });

@@ -96,15 +96,30 @@
       overflow: hidden;
       cursor: pointer;
       position: relative;
-      background: #ddd;
+      background: #e8efe1;
       box-shadow: 0 3px 12px rgba(15,90,44,.07);
       transition: box-shadow .2s, transform .2s;
       aspect-ratio: 4 / 3;
       min-height: 180px;
     }
+    .photoItem.isBroken::after{
+      content:"Ảnh đang cập nhật";
+      position:absolute;
+      inset:0;
+      z-index:1;
+      display:grid;
+      place-items:center;
+      padding:12px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+      text-align:center;
+    }
     .photoItem:hover{ box-shadow: 0 10px 28px rgba(15,90,44,.16); transform: translateY(-2px); }
     .photoItem img{
       display: block;
+      position:absolute;
+      inset:0;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -114,10 +129,10 @@
       background: linear-gradient(180deg,#f4f6ef,#e8efe1);
       image-rendering: auto;
     }
-    .photoItem img[loading="lazy"]{content-visibility:auto}
     .photoItem:hover img{ transform: scale(1.04); }
     .photoOverlay{
       position: absolute;
+      z-index:2;
       bottom: 0; left: 0; right: 0;
       padding: 24px 12px 10px;
       background: linear-gradient(0deg,rgba(5,25,14,.78),transparent);
@@ -242,11 +257,29 @@
     .stepContent{flex:1}
     .stepContent strong{display:block;color:var(--blue-3);font-size:14.5px;font-weight:800;margin-bottom:4px}
     .stepContent p{color:var(--muted);font-size:13.5px;line-height:1.55}
-    .codeBlock{
+    .setupAlert{
+      display:none;
+      margin-bottom:18px;
+      padding:12px 14px;
+      border-left:4px solid #c47a24;
+      border-radius:0 8px 8px 0;
+      background:#fff7e8;
+      color:#654010;
+      font-size:13.5px;
+      font-weight:700;
+      line-height:1.55;
+    }
+    .codeWrap{
       position: relative;
       margin:8px 0;
+    }
+    .codeBlock{
+      display:block;
+      margin:0;
       padding:14px;
+      padding-right:94px;
       background:#0d1f13;
+      border:0;
       border-radius:8px;
       font-family:'Courier New',monospace;
       font-size:12px;
@@ -418,6 +451,7 @@
           <p>Chỉ cần làm 1 lần • Miễn phí • Tự động cập nhật khi thêm ảnh mới vào Drive</p>
         </div>
         <div class="setupBody">
+          <div class="setupAlert" id="setupAlert" role="status"></div>
 
           <div class="step">
             <span class="stepNum">1</span>
@@ -431,7 +465,8 @@
             <span class="stepNum">2</span>
             <div class="stepContent">
               <strong>Dán đoạn code sau vào (xóa code cũ trước)</strong>
-              <div class="codeBlock" id="gsCode">const FOLDER_ID = '1m8VYdlT_uSWitZDgqGJvj5_Do9cbgstH';
+              <div class="codeWrap">
+                <pre class="codeBlock" id="gsCode">const FOLDER_ID = '1m8VYdlT_uSWitZDgqGJvj5_Do9cbgstH';
 
 function doGet() {
   try {
@@ -455,10 +490,12 @@ function scanFolder(folder, cat) {
   while (fi.hasNext()) {
     const f = fi.next();
     if (f.getMimeType().startsWith('image/')) {
+      const id = f.getId();
       files.push({
-        id:   f.getId(),
+        id:   id,
         name: f.getName().replace(/\.[^.]+$/, ''),
-        cat:  cat
+        cat:  cat,
+        thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w900'
       });
     }
   }
@@ -469,8 +506,9 @@ function scanFolder(folder, cat) {
     files.push(...scanFolder(sub, sub.getName()));
   }
   return files;
-}</button>
-              <button class="copyBtn" onclick="copyCode()">Sao chép</button>
+}</pre>
+                <button class="copyBtn" onclick="copyCode()">Sao chép</button>
+              </div>
             </div>
           </div>
 
@@ -567,7 +605,7 @@ function scanFolder(folder, cat) {
 /* ══════════════════════════════════════════════
    CẤU HÌNH – URL Web App Apps Script đã deploy xong
 ══════════════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxpLc5S2-ta3mifY4WOJCysvUKaoUiHYgfktgyr5bumXKBzDnvbR4rZomZpxal6wPC/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfolIwIvO0aDMltwWgWQcVUDvZ4k4Alsrr14MJODyUeW4D4qiwRwz4TaKGpo__AyhrYQ/exec';
 
 /* ══════════════════════════════════════════════
    TRẠNG THÁI
@@ -582,11 +620,14 @@ let SEARCH_Q    = '';
    KHỞI ĐỘNG
 ══════════════════════════════════════════════ */
 (function init() {
-  // Ưu tiên URL trong code, sau đó thử localStorage
-  const url = SCRIPT_URL || localStorage.getItem('tn_album_url') || '';
+  // URL mới nhập ở setup phải thắng URL cũ hard-code trong file.
+  const savedUrl = localStorage.getItem('tn_album_url') || '';
+  const url = savedUrl || SCRIPT_URL || '';
+  const input = document.getElementById('scriptUrlInput');
+  if (input && savedUrl) input.value = savedUrl;
 
   if (!url || !url.includes('script.google.com')) {
-    document.getElementById('setupWrap').style.display = '';
+    showSetupMessage('');
   } else {
     loadAlbum(url);
   }
@@ -625,22 +666,47 @@ function showSkeleton() {
 async function loadAlbum(url) {
   showSkeleton();
   try {
-    const res  = await fetch(url);
-    const json = await res.json();
+    const res  = await fetch(cacheBust(url), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const text = await res.text();
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error('Apps Script không trả JSON hợp lệ');
+    }
+
     if (!json.ok) throw new Error(json.error || 'Lỗi không xác định');
-    ALL_PHOTOS = (json.data || []).sort((a, b) => {
+    ALL_PHOTOS = (json.data || [])
+      .map(normalizePhoto)
+      .filter(p => p.id || p.src || p.thumb)
+      .sort((a, b) => {
       const catCmp = String(a.cat || '').localeCompare(String(b.cat || ''), 'vi', { sensitivity: 'base' });
       if (catCmp !== 0) return catCmp;
       return String(a.name || '').localeCompare(String(b.name || ''), 'vi', { sensitivity: 'base' });
     });
+    if (!ALL_PHOTOS.length) throw new Error('Apps Script không trả ảnh nào');
+
     document.getElementById('skeletonWrap').style.display = 'none';
+    document.getElementById('setupWrap').style.display = 'none';
     buildUI();
   } catch (err) {
     console.error('Lỗi tải album:', err);
     document.getElementById('skeletonWrap').style.display = 'none';
-    document.getElementById('setupWrap').style.display = '';
-    alert('⚠️ Không thể tải album. Kiểm tra lại URL Apps Script và đảm bảo đã deploy đúng cách.');
+    showSetupMessage('Không tải được album từ Apps Script (' + err.message + '). Endpoint hiện tại có thể chưa deploy quyền Anyone, hoặc cần copy Web app URL mới rồi bấm Kích hoạt.');
   }
+}
+
+function showSetupMessage(message) {
+  const setup = document.getElementById('setupWrap');
+  const alertBox = document.getElementById('setupAlert');
+  const input = document.getElementById('scriptUrlInput');
+  setup.style.display = '';
+  if (input && !input.value) input.value = localStorage.getItem('tn_album_url') || SCRIPT_URL || '';
+  if (!alertBox) return;
+  alertBox.textContent = message || '';
+  alertBox.style.display = message ? '' : 'none';
 }
 
 /* ══════════════════════════════════════════════
@@ -657,6 +723,9 @@ function buildUI() {
 
   // Category chips
   const chipsEl = document.getElementById('chips');
+  chipsEl.querySelectorAll('.chip:not([data-cat="__all__"])').forEach(c => c.remove());
+  chipsEl.querySelector('[data-cat="__all__"]').classList.add('active');
+  ACTIVE_CAT = '__all__';
   cats.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'chip';
@@ -667,19 +736,28 @@ function buildUI() {
   });
 
   // Gán sự kiện
-  chipsEl.querySelectorAll('.chip').forEach(c => {
-    c.addEventListener('click', () => {
+  if (!chipsEl.dataset.bound) {
+    chipsEl.addEventListener('click', e => {
+      const c = e.target.closest('.chip');
+      if (!c) return;
       chipsEl.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
       c.classList.add('active');
       ACTIVE_CAT = c.dataset.cat;
       renderGrid();
     });
-  });
+    chipsEl.dataset.bound = '1';
+  }
 
-  document.getElementById('searchInput').addEventListener('input', e => {
-    SEARCH_Q = e.target.value.trim().toLowerCase();
-    renderGrid();
-  });
+  const searchInput = document.getElementById('searchInput');
+  SEARCH_Q = '';
+  searchInput.value = '';
+  if (!searchInput.dataset.bound) {
+    searchInput.addEventListener('input', e => {
+      SEARCH_Q = e.target.value.trim().toLowerCase();
+      renderGrid();
+    });
+    searchInput.dataset.bound = '1';
+  }
 
   renderGrid();
 }
@@ -690,7 +768,7 @@ function buildUI() {
 function renderGrid() {
   VISIBLE = ALL_PHOTOS.filter(p => {
     const catMatch  = ACTIVE_CAT === '__all__' || p.cat === ACTIVE_CAT;
-    const nameMatch = !SEARCH_Q || p.name.toLowerCase().includes(SEARCH_Q);
+    const nameMatch = !SEARCH_Q || String(p.name || '').toLowerCase().includes(SEARCH_Q);
     return catMatch && nameMatch;
   }).sort((a, b) => {
     const catCmp = String(a.cat || '').localeCompare(String(b.cat || ''), 'vi', { sensitivity: 'base' });
@@ -712,15 +790,22 @@ function renderGrid() {
   grid.innerHTML = '';
 
   VISIBLE.forEach((photo, idx) => {
-    const thumb = `https://drive.google.com/uc?export=view&id=${photo.id}`;
     const item = document.createElement('div');
     item.className = 'photoItem';
-    item.innerHTML = `
-      <img src="${thumb}" alt="${esc(photo.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://drive.google.com/thumbnail?id=${photo.id}&sz=w480';">
+
+    const img = document.createElement('img');
+    img.alt = photo.name;
+    img.loading = 'eager';
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer';
+
+    item.appendChild(img);
+    setImageSources(img, driveImageCandidates(photo, 900), item);
+    item.insertAdjacentHTML('beforeend', `
       <div class="photoOverlay">
         <div class="photoName">${esc(photo.name)}</div>
         <span class="photoCat">${esc(photo.cat)}</span>
-      </div>`;
+      </div>`);
     item.addEventListener('click', () => openLightbox(idx));
     grid.appendChild(item);
   });
@@ -738,13 +823,9 @@ function openLightbox(idx) {
 
 function showLbPhoto() {
   const photo = VISIBLE[LB_INDEX];
-  const full  = `https://drive.google.com/uc?export=view&id=${photo.id}`;
   const lbImg = document.getElementById('lbImg');
-  lbImg.src = full;
   lbImg.alt = photo.name;
-  lbImg.onerror = () => {
-    lbImg.src = `https://drive.google.com/thumbnail?id=${photo.id}&sz=w1200`;
-  };
+  setImageSources(lbImg, driveImageCandidates(photo, 1600));
   document.getElementById('lbName').textContent = photo.name;
   document.getElementById('lbCat').textContent  = photo.cat;
   document.getElementById('lbCounter').textContent = `${LB_INDEX + 1} / ${VISIBLE.length}`;
@@ -773,6 +854,76 @@ document.addEventListener('keydown', e => {
 /* ══════════════════════════════════════════════
    TIỆN ÍCH
 ══════════════════════════════════════════════ */
+function cacheBust(url) {
+  const sep = url.includes('?') ? '&' : '?';
+  return url + sep + '_=' + Date.now();
+}
+
+function normalizePhoto(photo) {
+  const rawUrl = photo.url || photo.src || photo.image || photo.link || '';
+  const id = photo.id || photo.fileId || photo.file_id || extractDriveId(rawUrl);
+  const name = String(photo.name || photo.title || 'Ảnh món ăn').replace(/\.[^.]+$/, '');
+  return {
+    id: id || '',
+    name,
+    cat: String(photo.cat || photo.category || photo.folder || 'Tất cả'),
+    src: rawUrl,
+    thumb: photo.thumb || photo.thumbnail || ''
+  };
+}
+
+function extractDriveId(url) {
+  const text = String(url || '');
+  const match = text.match(/\/d\/([a-zA-Z0-9_-]{20,})/) || text.match(/[?&]id=([a-zA-Z0-9_-]{20,})/);
+  return match ? match[1] : '';
+}
+
+function driveImageCandidates(photo, width) {
+  const urls = [];
+  const push = url => {
+    if (url && !urls.includes(url)) urls.push(url);
+  };
+  const id = photo.id ? encodeURIComponent(photo.id) : '';
+
+  if (id) {
+    push(`https://lh3.googleusercontent.com/d/${id}=w${width}`);
+    push(`https://drive.google.com/thumbnail?id=${id}&sz=w${width}`);
+    push(`https://drive.google.com/uc?export=view&id=${id}`);
+  }
+  push(photo.thumb);
+  push(photo.src);
+  return urls;
+}
+
+function setImageSources(img, urls, item) {
+  img._tnSources = (urls || []).filter(Boolean);
+  img._tnSourceIndex = 0;
+  img.onload = () => {
+    if (item) {
+      item.classList.add('hasImage');
+      item.classList.remove('isBroken');
+    }
+  };
+  img.onerror = () => {
+    img._tnSourceIndex += 1;
+    if (img._tnSourceIndex < img._tnSources.length) {
+      img.src = img._tnSources[img._tnSourceIndex];
+      return;
+    }
+    img.onerror = null;
+    if (item) {
+      item.classList.add('isBroken');
+      item.classList.remove('hasImage');
+    }
+  };
+  if (!img._tnSources.length) {
+    img.removeAttribute('src');
+    if (item) item.classList.add('isBroken');
+    return;
+  }
+  img.src = img._tnSources[0];
+}
+
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
